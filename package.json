@@ -1,0 +1,50 @@
+{
+  "name": "annamalai-movement-app",
+  "version": "1.0.0",
+  "main": "expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.0",
+    "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/native-stack": "^6.9.26",
+    "@react-navigation/stack": "^6.3.29",
+    "expo": "~51.0.0",
+    "expo-blur": "~13.0.2",
+    "expo-font": "~12.0.9",
+    "expo-haptics": "~13.0.1",
+    "expo-image": "~1.13.0",
+    "expo-linear-gradient": "~13.0.2",
+    "expo-linking": "~6.3.1",
+    "expo-location": "~17.0.1",
+    "expo-router": "~3.5.14",
+    "expo-splash-screen": "~0.27.5",
+    "expo-status-bar": "~1.12.1",
+    "nativewind": "^4.0.1",
+    "react": "18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "0.74.5",
+    "react-native-gesture-handler": "~2.16.1",
+    "react-native-reanimated": "~3.10.1",
+    "react-native-safe-area-context": "4.10.5",
+    "react-native-screens": "3.31.1",
+    "react-native-svg": "15.2.0",
+    "react-native-web": "^0.19.13",
+    "react-native-worklets-core": "^1.6.3",
+    "tailwindcss": "^3.4.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@types/react": "~18.2.79",
+    "@types/react-native": "~0.73.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "typescript": "~5.3.3"
+  },
+  "private": true
+}

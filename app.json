@@ -40,6 +40,16 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "zoho": {
+        "clientId": "1000.4WQZDKTLHYLVLBOTRFI3HOY439FHFJ",
+        "redirectUri": "https://annaapp.vercel.app",
+        "scope": "AaaServer.profile.READ",
+        "authEndpoint": "https://accounts.zoho.com/oauth/v2/auth",
+        "tokenEndpoint": "https://accounts.zoho.com/oauth/v2/token",
+        "userInfoEndpoint": "https://accounts.zoho.com/oauth/v2/userinfo"
+      }
     }
   }
 }

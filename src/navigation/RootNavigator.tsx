@@ -8,14 +8,17 @@ import NotificationsScreen from "@/screens/NotificationsScreen";
 import LeadersScreen from "@/screens/LeadersScreen";
 import VolunteerScreen from "@/screens/VolunteerScreen";
 import EventsScreen from "@/screens/EventsScreen";
+import LoginScreen from "@/screens/LoginScreen";
 
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { RootStackParamList } from "@/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
   const { isDark, theme } = useTheme();
+  const { isAuthenticated } = useAuth();
 
   const navTheme = {
     ...(isDark ? DarkTheme : DefaultTheme),
@@ -32,7 +35,7 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer theme={navTheme}>
-      <StatusBar style={theme.statusBar} />
+      <StatusBar style={isAuthenticated ? theme.statusBar : "light"} />
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -40,15 +43,25 @@ export default function RootNavigator() {
           animation: "slide_from_right",
         }}
       >
-        <Stack.Screen name="Main" component={BottomTabNavigator} />
-        <Stack.Screen
-          name="Notifications"
-          component={NotificationsScreen}
-          options={{ animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen name="LeaderChannel" component={LeadersScreen} />
-        <Stack.Screen name="EventDetail" component={EventsScreen} />
-        <Stack.Screen name="IssueReport" component={VolunteerScreen} />
+        {!isAuthenticated ? (
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ animation: "fade" }}
+          />
+        ) : (
+          <>
+            <Stack.Screen name="Main" component={BottomTabNavigator} />
+            <Stack.Screen
+              name="Notifications"
+              component={NotificationsScreen}
+              options={{ animation: "slide_from_bottom" }}
+            />
+            <Stack.Screen name="LeaderChannel" component={LeadersScreen} />
+            <Stack.Screen name="EventDetail" component={EventsScreen} />
+            <Stack.Screen name="IssueReport" component={VolunteerScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

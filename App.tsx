@@ -7,6 +7,7 @@ import { useFonts } from "expo-font";
 import { Ionicons, MaterialIcons, FontAwesome5, Feather } from "@expo/vector-icons";
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { LocationProvider } from "@/contexts/LocationContext";
 import { ScrollProvider } from "@/contexts/ScrollContext";
 import RootNavigator from "@/navigation/RootNavigator";
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
+        <AuthProvider>
         <ThemeProvider>
           <LocationProvider>
             <ScrollProvider>
@@ -42,6 +44,7 @@ export default function App() {
             </ScrollProvider>
           </LocationProvider>
         </ThemeProvider>
+        </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

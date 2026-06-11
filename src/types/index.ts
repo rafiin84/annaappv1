@@ -241,6 +241,7 @@ export interface VolunteerTask {
 }
 
 export type RootStackParamList = {
+  Login: undefined;
   Main: undefined;
   PostDetail: { postId: string };
   EventDetail: { eventId: string };

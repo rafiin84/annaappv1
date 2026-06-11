@@ -12,9 +12,11 @@ import {
   Platform,
   Image,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import {
   PlusCircleIcon, Bars3Icon, CalendarDaysIcon, MegaphoneIcon, XMarkIcon,
+  PhotoIcon, VideoCameraIcon,
 } from "react-native-heroicons/outline";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -205,6 +207,8 @@ export default function HomeScreen() {
 
 // ─── Add Post Modal ────────────────────────────────────────────────────────────
 
+type MediaItem = { url: string; type: "image" | "video" };
+
 function AddPostModal({
   visible, onClose, onPost, theme, isDark, location,
 }: {
@@ -217,10 +221,31 @@ function AddPostModal({
 }) {
   const [text, setText] = useState("");
   const [hashtags, setHashtags] = useState("");
+  const [media, setMedia] = useState<MediaItem[]>([]);
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  const isDesktop = Platform.OS === "web" && width >= 768;
+
+  const pickMedia = (type: "image" | "video") => {
+    if (Platform.OS === "web") {
+      const input = document.createElement("input") as HTMLInputElement;
+      input.type = "file";
+      input.accept = type === "image" ? "image/*" : "video/*";
+      input.multiple = true;
+      input.onchange = (e: Event) => {
+        const files = Array.from((e.target as HTMLInputElement).files ?? []);
+        const urls = files.map((f) => URL.createObjectURL(f));
+        setMedia((prev) => [...prev, ...urls.map((url) => ({ url, type }))]);
+      };
+      input.click();
+    }
+  };
+
+  const removeMedia = (idx: number) =>
+    setMedia((prev) => prev.filter((_, i) => i !== idx));
 
   const handleSubmit = () => {
-    if (!text.trim()) return;
+    if (!text.trim() && media.length === 0) return;
     const tags = hashtags
       .split(/[\s,#]+/)
       .filter(Boolean)
@@ -228,7 +253,7 @@ function AddPostModal({
 
     const newPost: any = {
       id: `user_${Date.now()}`,
-      type: "text",
+      type: media.length > 0 ? "image" : "text",
       author: {
         id: CURRENT_USER.id,
         name: CURRENT_USER.name,
@@ -238,6 +263,7 @@ function AddPostModal({
         role: CURRENT_USER.role,
       },
       content: text.trim(),
+      media: media.map((m) => ({ type: m.type, url: m.url, aspectRatio: 1.5 })),
       location: {
         state: location.state,
         district: location.district,
@@ -257,12 +283,20 @@ function AddPostModal({
     onPost(newPost);
     setText("");
     setHashtags("");
+    setMedia([]);
   };
 
+  const canPost = text.trim().length > 0 || media.length > 0;
+
   return (
-    <Modal visible={visible} transparent animationType="slide" statusBarTranslucent>
+    <Modal
+      visible={visible}
+      transparent
+      animationType={isDesktop ? "fade" : "slide"}
+      statusBarTranslucent
+    >
       <KeyboardAvoidingView
-        style={styles.modalWrap}
+        style={[styles.modalWrap, isDesktop && styles.modalWrapDesktop]}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <TouchableOpacity style={styles.modalBackdrop} activeOpacity={1} onPress={onClose} />
@@ -270,9 +304,10 @@ function AddPostModal({
         <View
           style={[
             styles.modalCard,
+            isDesktop ? styles.modalCardDesktop : styles.modalCardMobile,
             {
               backgroundColor: theme.surface,
-              paddingBottom: insets.bottom + 16,
+              paddingBottom: isDesktop ? 20 : insets.bottom + 16,
             },
           ]}
         >
@@ -283,54 +318,97 @@ function AddPostModal({
             </TouchableOpacity>
             <Text style={[styles.modalTitle, { color: theme.textPrimary }]}>New Post</Text>
             <TouchableOpacity
-              style={[styles.postBtn, { backgroundColor: text.trim() ? theme.primary : theme.border }]}
+              style={[styles.postBtn, { backgroundColor: canPost ? theme.primary : theme.border }]}
               onPress={handleSubmit}
-              disabled={!text.trim()}
+              disabled={!canPost}
             >
               <Text style={styles.postBtnText}>Post</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Author row */}
-          <View style={styles.authorRow}>
-            <Image source={{ uri: CURRENT_USER.avatar }} style={styles.authorAvatar} />
-            <View>
-              <Text style={[styles.authorName, { color: theme.textPrimary }]}>{CURRENT_USER.name}</Text>
-              <Text style={[styles.authorLocation, { color: theme.textSecondary }]}>
-                📍 {location.constituency}
-              </Text>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            {/* Author row */}
+            <View style={styles.authorRow}>
+              <Image source={{ uri: CURRENT_USER.avatar }} style={styles.authorAvatar} />
+              <View>
+                <Text style={[styles.authorName, { color: theme.textPrimary }]}>{CURRENT_USER.name}</Text>
+                <Text style={[styles.authorLocation, { color: theme.textSecondary }]}>
+                  📍 {location.constituency}
+                </Text>
+              </View>
             </View>
-          </View>
 
-          {/* Text input */}
-          <TextInput
-            style={[styles.contentInput, { color: theme.textPrimary }]}
-            placeholder="What's happening in your constituency?"
-            placeholderTextColor={theme.textTertiary}
-            multiline
-            maxLength={500}
-            value={text}
-            onChangeText={setText}
-            autoFocus
-          />
-
-          {/* Hashtags */}
-          <View style={[styles.hashtagRow, { borderTopColor: theme.border }]}>
-            <Text style={[styles.hashtagLabel, { color: theme.textSecondary }]}>#</Text>
+            {/* Text input */}
             <TextInput
-              style={[styles.hashtagInput, { color: theme.textPrimary }]}
-              placeholder="Add hashtags (WeTheLeaders, CoimbatoreNorth…)"
+              style={[styles.contentInput, { color: theme.textPrimary }]}
+              placeholder="What's happening in your constituency?"
               placeholderTextColor={theme.textTertiary}
-              value={hashtags}
-              onChangeText={setHashtags}
-              returnKeyType="done"
+              multiline
+              maxLength={500}
+              value={text}
+              onChangeText={setText}
+              autoFocus
             />
-          </View>
 
-          {/* Char count */}
-          <Text style={[styles.charCount, { color: text.length > 450 ? "#EF4444" : theme.textTertiary }]}>
-            {text.length}/500
-          </Text>
+            {/* Media thumbnails */}
+            {media.length > 0 && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.thumbsRow}
+              >
+                {media.map((m, i) => (
+                  <View key={i} style={styles.thumbWrap}>
+                    <Image source={{ uri: m.url }} style={styles.thumbImage} resizeMode="cover" />
+                    {m.type === "video" && (
+                      <View style={styles.videoOverlay}>
+                        <Text style={styles.videoLabel}>▶</Text>
+                      </View>
+                    )}
+                    <TouchableOpacity style={styles.removeThumb} onPress={() => removeMedia(i)}>
+                      <XMarkIcon size={12} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                {/* Add more */}
+                <TouchableOpacity
+                  style={[styles.addMoreThumb, { borderColor: theme.border, backgroundColor: theme.surfaceSecondary }]}
+                  onPress={() => pickMedia("image")}
+                >
+                  <PhotoIcon size={20} color={theme.textSecondary} />
+                  <Text style={[styles.addMoreText, { color: theme.textSecondary }]}>Add</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            )}
+
+            {/* Hashtags */}
+            <View style={[styles.hashtagRow, { borderTopColor: theme.border }]}>
+              <Text style={[styles.hashtagLabel, { color: theme.textSecondary }]}>#</Text>
+              <TextInput
+                style={[styles.hashtagInput, { color: theme.textPrimary }]}
+                placeholder="Add hashtags  (WeTheLeaders, CoimbatoreNorth…)"
+                placeholderTextColor={theme.textTertiary}
+                value={hashtags}
+                onChangeText={setHashtags}
+                returnKeyType="done"
+              />
+            </View>
+          </ScrollView>
+
+          {/* Bottom action bar */}
+          <View style={[styles.actionBar, { borderTopColor: theme.border }]}>
+            <TouchableOpacity style={styles.actionBtn} onPress={() => pickMedia("image")} activeOpacity={0.7}>
+              <PhotoIcon size={22} color={theme.primary} />
+              <Text style={[styles.actionBtnText, { color: theme.primary }]}>Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionBtn} onPress={() => pickMedia("video")} activeOpacity={0.7}>
+              <VideoCameraIcon size={22} color="#7C3AED" />
+              <Text style={[styles.actionBtnText, { color: "#7C3AED" }]}>Video</Text>
+            </TouchableOpacity>
+            <Text style={[styles.charCount, { color: text.length > 450 ? "#EF4444" : theme.textTertiary, marginLeft: "auto" as any }]}>
+              {text.length}/500
+            </Text>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -426,15 +504,25 @@ const styles = StyleSheet.create({
 
   // Modal
   modalWrap: { flex: 1, justifyContent: "flex-end" },
+  modalWrapDesktop: { justifyContent: "center", alignItems: "center" },
   modalBackdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.55)",
   },
-  modalCard: {
+  modalCard: { minHeight: 360, maxHeight: "88%" as any },
+  modalCardMobile: {
+    width: "100%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    minHeight: 360,
-    maxHeight: "85%",
+  },
+  modalCardDesktop: {
+    width: 500,
+    borderRadius: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 12,
   },
   modalHeader: {
     flexDirection: "row",
@@ -446,11 +534,7 @@ const styles = StyleSheet.create({
   },
   modalCloseBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   modalTitle: { fontSize: 16, fontWeight: "700" },
-  postBtn: {
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
+  postBtn: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 20 },
   postBtnText: { color: "#fff", fontSize: 14, fontWeight: "700" },
   authorRow: {
     flexDirection: "row",
@@ -469,16 +553,66 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: "top",
   },
+  thumbsRow: { paddingHorizontal: 16, paddingVertical: 8, gap: 8 },
+  thumbWrap: { width: 80, height: 80, borderRadius: 10, overflow: "hidden", position: "relative" },
+  thumbImage: { width: "100%", height: "100%" },
+  videoOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  videoLabel: { color: "#fff", fontSize: 20 },
+  removeThumb: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addMoreThumb: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  addMoreText: { fontSize: 11, fontWeight: "600" },
   hashtagRow: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingTop: 12,
+    paddingBottom: 4,
     borderTopWidth: StyleSheet.hairlineWidth,
     marginTop: 8,
     gap: 6,
   },
   hashtagLabel: { fontSize: 18, fontWeight: "700" },
   hashtagInput: { flex: 1, fontSize: 14 },
-  charCount: { fontSize: 11, textAlign: "right", paddingHorizontal: 16, paddingTop: 4 },
+  actionBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    gap: 4,
+  },
+  actionBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  actionBtnText: { fontSize: 13, fontWeight: "600" },
+  charCount: { fontSize: 11, paddingHorizontal: 4 },
 });

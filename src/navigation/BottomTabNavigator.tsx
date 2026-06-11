@@ -34,7 +34,7 @@ const SIDEBAR_W = 72;
 const DESKTOP_BREAK = 768;
 const CONTENT_MAX_W = 470;
 const RIGHT_PANEL_W = 280;
-const PANEL_GAP = 12;
+const PANEL_GAP = 48;
 
 // Sidebar and right-panel left positions relative to viewport width
 function useDesktopPositions(vw: number) {

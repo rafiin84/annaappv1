@@ -8,7 +8,16 @@ import {
   Image,
   FlatList,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  ChatBubbleLeftRightIcon,
+  ChevronRightIcon,
+  ArrowTrendingUpIcon,
+  SparklesIcon,
+} from "react-native-heroicons/outline";
+import {
+  ChatBubbleLeftIcon,
+  CheckCircleIcon,
+} from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -89,14 +98,14 @@ function MyAreaTab({ theme, location }: { theme: any; location: any }) {
             </Text>
           </View>
           <View style={styles.activityRow}>
-            <Ionicons name="chatbubble" size={14} color={theme.textTertiary} />
+            <ChatBubbleLeftIcon size={14} color={theme.textTertiary} />
             <Text style={[styles.activityText, { color: theme.textSecondary }]}>
               <Text style={{ fontWeight: "700", color: theme.textPrimary }}>47 posts </Text>
               today
             </Text>
           </View>
           <View style={styles.activityRow}>
-            <Ionicons name="trending-up" size={14} color={theme.primary} />
+            <ArrowTrendingUpIcon size={14} color={theme.primary} />
             <Text style={[styles.activityText, { color: theme.textSecondary }]}>
               <Text style={{ fontWeight: "700", color: theme.primary }}>+23% </Text>
               engagement this week
@@ -119,7 +128,7 @@ function MyAreaTab({ theme, location }: { theme: any; location: any }) {
             style={[styles.discussionCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}
           >
             <View style={[styles.discussionIcon, { backgroundColor: theme.primaryLight }]}>
-              <Ionicons name="chatbubbles" size={18} color={theme.primary} />
+              <ChatBubbleLeftRightIcon size={18} color={theme.primary} />
             </View>
             <View style={styles.discussionContent}>
               <Text style={[styles.discussionText, { color: theme.textPrimary }]} numberOfLines={2}>
@@ -129,7 +138,7 @@ function MyAreaTab({ theme, location }: { theme: any; location: any }) {
                 {formatTimeAgo(post.createdAt)}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={16} color={theme.textTertiary} />
+            <ChevronRightIcon size={16} color={theme.textTertiary} />
           </TouchableOpacity>
         ))}
       </View>
@@ -146,7 +155,7 @@ function DistrictTab({ theme, location }: { theme: any; location: any }) {
       ))}
       <View style={[styles.suggestCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
         <View style={[styles.suggestIconBg, { backgroundColor: theme.primaryLight }]}>
-          <Ionicons name="sparkles" size={22} color={theme.primary} />
+          <SparklesIcon size={22} color={theme.primary} />
         </View>
         <Text style={[styles.suggestTitle, { color: theme.textPrimary }]}>Join Coimbatore Youth Network</Text>
         <Text style={[styles.suggestSub, { color: theme.textSecondary }]}>
@@ -174,7 +183,7 @@ function StateTab({ theme }: { theme: any }) {
           >
             <View style={[styles.campaignDot, { backgroundColor: theme.primary }]} />
             <Text style={[styles.campaignRowText, { color: theme.textPrimary }]}>{camp}</Text>
-            <Ionicons name="chevron-forward" size={16} color={theme.textTertiary} />
+            <ChevronRightIcon size={16} color={theme.textTertiary} />
           </TouchableOpacity>
         ))}
       </View>
@@ -202,7 +211,7 @@ function LeadersTab({ theme }: { theme: any }) {
           <View style={styles.leaderInfo}>
             <View style={styles.leaderNameRow}>
               <Text style={[styles.leaderName, { color: theme.textPrimary }]}>{leader.user.name}</Text>
-              <Ionicons name="checkmark-circle" size={15} color={theme.primary} />
+              <CheckCircleIcon size={15} color={theme.primary} />
             </View>
             <Text style={[styles.leaderTitle, { color: theme.textSecondary }]}>{leader.title}</Text>
             {leader.recentMessage && (

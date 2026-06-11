@@ -9,7 +9,23 @@ import {
   Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  EllipsisHorizontalIcon,
+  ChatBubbleLeftIcon,
+  PaperAirplaneIcon,
+  RocketLaunchIcon,
+  BookmarkIcon as BookmarkOutlineIcon,
+  HeartIcon as HeartOutlineIcon,
+} from "react-native-heroicons/outline";
+import {
+  CheckCircleIcon,
+  HeartIcon,
+  BookmarkIcon,
+  ExclamationTriangleIcon,
+  TrophyIcon,
+  MegaphoneIcon,
+  MapPinIcon,
+} from "react-native-heroicons/solid";
 
 import { Post } from "@/types";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -49,11 +65,12 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
   const isLong = post.content.length > 180;
   const displayContent = isLong && !expanded ? post.content.slice(0, 180) + "..." : post.content;
 
-  const typeConfig: Record<string, { label: string; color: string; icon: string }> = {
-    announcement: { label: "Announcement", color: palette.saffron[500],  icon: "megaphone" },
-    campaign:      { label: "Campaign",     color: "#8B5CF6",             icon: "rocket" },
-    issue_report:  { label: "Local Issue",  color: palette.red[500],      icon: "warning" },
-    achievement:   { label: "Achievement",  color: palette.gold[500],     icon: "trophy" },
+  type TypeConfigEntry = { label: string; color: string; Icon: React.ComponentType<any> };
+  const typeConfig: Record<string, TypeConfigEntry> = {
+    announcement: { label: "Announcement", color: palette.saffron[500],  Icon: MegaphoneIcon },
+    campaign:      { label: "Campaign",     color: "#8B5CF6",             Icon: RocketLaunchIcon },
+    issue_report:  { label: "Local Issue",  color: palette.red[500],      Icon: ExclamationTriangleIcon },
+    achievement:   { label: "Achievement",  color: palette.gold[500],     Icon: TrophyIcon },
   };
   const typeInfo = typeConfig[post.type];
 
@@ -62,7 +79,7 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
       {/* Pinned Banner */}
       {post.isPinned && (
         <View style={[styles.pinnedBanner, { backgroundColor: theme.primaryLight }]}>
-          <Ionicons name="pin" size={12} color={theme.primary} />
+          <MapPinIcon size={12} color={theme.primary} />
           <Text style={[styles.pinnedText, { color: theme.primary }]}>Pinned Post</Text>
         </View>
       )}
@@ -70,7 +87,7 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
       {/* Type Badge */}
       {typeInfo && (
         <View style={[styles.typeBadge, { backgroundColor: typeInfo.color + "18" }]}>
-          <Ionicons name={typeInfo.icon as any} size={12} color={typeInfo.color} />
+          <typeInfo.Icon size={12} color={typeInfo.color} />
           <Text style={[styles.typeBadgeText, { color: typeInfo.color }]}>{typeInfo.label}</Text>
         </View>
       )}
@@ -88,7 +105,7 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
             <View style={styles.nameRow}>
               <Text style={[styles.authorName, { color: theme.textPrimary }]}>{post.author.name}</Text>
               {post.author.isVerified && (
-                <Ionicons name="checkmark-circle" size={15} color={theme.primary} style={{ marginLeft: 3 }} />
+                <CheckCircleIcon size={15} color={theme.primary} style={{ marginLeft: 3 }} />
               )}
               {post.author.isLeader && (
                 <View style={[styles.roleBadge, { backgroundColor: palette.gold[500] + "20" }]}>
@@ -102,7 +119,7 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
           </View>
         </TouchableOpacity>
         <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Ionicons name="ellipsis-horizontal" size={20} color={theme.textSecondary} />
+          <EllipsisHorizontalIcon size={20} color={theme.textSecondary} />
         </TouchableOpacity>
       </View>
 
@@ -183,7 +200,7 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
       {post.campaign && (
         <View style={[styles.campaignContainer, { backgroundColor: theme.primaryLight, borderColor: theme.primary + "30" }]}>
           <View style={styles.campaignHeader}>
-            <Ionicons name="rocket" size={16} color={theme.primary} />
+            <RocketLaunchIcon size={16} color={theme.primary} />
             <Text style={[styles.campaignTitle, { color: theme.primary }]}>{post.campaign.title}</Text>
           </View>
           <View style={[styles.progressBg, { backgroundColor: theme.border }]}>
@@ -219,11 +236,9 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
       <View style={[styles.actionBar, { borderTopColor: theme.divider }]}>
         <TouchableOpacity style={styles.action} onPress={handleLike}>
           <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-            <Ionicons
-              name={liked ? "heart" : "heart-outline"}
-              size={22}
-              color={liked ? palette.red[500] : theme.textSecondary}
-            />
+            {liked
+              ? <HeartIcon size={22} color={palette.red[500]} />
+              : <HeartOutlineIcon size={22} color={theme.textSecondary} />}
           </Animated.View>
           <Text style={[styles.actionText, { color: liked ? palette.red[500] : theme.textSecondary }]}>
             {formatCount(likeCount)}
@@ -231,14 +246,14 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.action} onPress={() => onComment?.(post.id)}>
-          <Ionicons name="chatbubble-outline" size={21} color={theme.textSecondary} />
+          <ChatBubbleLeftIcon size={21} color={theme.textSecondary} />
           <Text style={[styles.actionText, { color: theme.textSecondary }]}>
             {formatCount(post.stats.comments)}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.action} onPress={() => onShare?.(post.id)}>
-          <Ionicons name="paper-plane-outline" size={22} color={theme.textSecondary} />
+          <PaperAirplaneIcon size={22} color={theme.textSecondary} />
           <Text style={[styles.actionText, { color: theme.textSecondary }]}>
             {formatCount(post.stats.shares)}
           </Text>
@@ -250,11 +265,9 @@ export default function FeedPost({ post, onLike, onComment, onShare, onSave, onP
           onPress={() => { setSaved(!saved); onSave?.(post.id); }}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons
-            name={saved ? "bookmark" : "bookmark-outline"}
-            size={22}
-            color={saved ? theme.primary : theme.textSecondary}
-          />
+          {saved
+            ? <BookmarkIcon size={22} color={theme.primary} />
+            : <BookmarkOutlineIcon size={22} color={theme.textSecondary} />}
         </TouchableOpacity>
       </View>
     </View>

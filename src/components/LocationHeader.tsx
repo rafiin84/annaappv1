@@ -8,7 +8,14 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  MapPinIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  MagnifyingGlassIcon,
+  BellIcon,
+  CheckCircleIcon,
+} from "react-native-heroicons/outline";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/contexts/ThemeContext";
@@ -56,11 +63,11 @@ export default function LocationHeader({ onNotificationsPress, unreadCount = 0 }
           </View>
           <TouchableOpacity onPress={() => setShowModal(true)} activeOpacity={0.8}>
             <View style={styles.locationRow}>
-              <Ionicons name="location" size={13} color={theme.primary} />
+              <MapPinIcon size={13} color={theme.primary} />
               <Text style={[styles.locationPrimary, { color: theme.textPrimary }]}>
                 {location.constituency}
               </Text>
-              <Ionicons name="chevron-down" size={13} color={theme.textSecondary} />
+              <ChevronDownIcon size={13} color={theme.textSecondary} />
             </View>
             <Text style={[styles.locationSub, { color: theme.textTertiary }]}>
               {location.district} · {location.state}
@@ -70,14 +77,14 @@ export default function LocationHeader({ onNotificationsPress, unreadCount = 0 }
 
         <View style={styles.actions}>
           <TouchableOpacity style={styles.iconBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="search-outline" size={22} color={theme.textPrimary} />
+            <MagnifyingGlassIcon size={22} color={theme.textPrimary} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={onNotificationsPress}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons name="notifications-outline" size={22} color={theme.textPrimary} />
+            <BellIcon size={22} color={theme.textPrimary} />
             {unreadCount > 0 && (
               <View style={[styles.notifBadge, { backgroundColor: theme.primary }]}>
                 <Text style={styles.badgeText}>{unreadCount > 9 ? "9+" : unreadCount}</Text>
@@ -120,11 +127,9 @@ export default function LocationHeader({ onNotificationsPress, unreadCount = 0 }
                     ]}
                     onPress={() => setSelectedDistrict(d)}
                   >
-                    <Ionicons
-                      name={selectedDistrict.district === d.district ? "chevron-down" : "chevron-forward"}
-                      size={16}
-                      color={selectedDistrict.district === d.district ? theme.primary : theme.textTertiary}
-                    />
+                    {selectedDistrict.district === d.district
+                      ? <ChevronDownIcon size={16} color={theme.primary} />
+                      : <ChevronRightIcon size={16} color={theme.textTertiary} />}
                     <Text
                       style={[
                         styles.districtName,
@@ -169,7 +174,7 @@ export default function LocationHeader({ onNotificationsPress, unreadCount = 0 }
                           {c}
                         </Text>
                         {location.constituency === c && (
-                          <Ionicons name="checkmark-circle" size={16} color={theme.primary} />
+                          <CheckCircleIcon size={16} color={theme.primary} />
                         )}
                       </TouchableOpacity>
                     ))}

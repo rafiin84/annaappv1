@@ -1,7 +1,20 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  ChevronRightIcon,
+  ClockIcon,
+  MapPinIcon,
+  ShareIcon,
+  CalendarDaysIcon,
+  AcademicCapIcon,
+  SparklesIcon,
+  MusicalNoteIcon,
+  RocketLaunchIcon,
+  MegaphoneIcon,
+  StarIcon as StarOutlineIcon,
+} from "react-native-heroicons/outline";
+import { CheckCircleIcon, UsersIcon, StarIcon } from "react-native-heroicons/solid";
 
 import { Event } from "@/types";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -14,13 +27,13 @@ interface Props {
   compact?: boolean;
 }
 
-const CATEGORY_CONFIG = {
-  rally:    { label: "Rally",    color: "#EF4444", icon: "megaphone" },
-  training: { label: "Training", color: "#8B5CF6", icon: "school" },
-  cleanup:  { label: "Cleanup",  color: "#22C55E", icon: "leaf" },
-  meeting:  { label: "Meeting",  color: "#3B82F6", icon: "people" },
-  campaign: { label: "Campaign", color: palette.saffron[500], icon: "rocket" },
-  cultural: { label: "Cultural", color: palette.gold[500], icon: "musical-notes" },
+const CATEGORY_CONFIG: Record<string, { label: string; color: string; Icon: React.ComponentType<any> }> = {
+  rally:    { label: "Rally",    color: "#EF4444",             Icon: MegaphoneIcon },
+  training: { label: "Training", color: "#8B5CF6",             Icon: AcademicCapIcon },
+  cleanup:  { label: "Cleanup",  color: "#22C55E",             Icon: SparklesIcon },
+  meeting:  { label: "Meeting",  color: "#3B82F6",             Icon: UsersIcon },
+  campaign: { label: "Campaign", color: palette.saffron[500],  Icon: RocketLaunchIcon },
+  cultural: { label: "Cultural", color: palette.gold[500],     Icon: MusicalNoteIcon },
 };
 
 export default function EventCard({ event, onPress, compact = false }: Props) {
@@ -58,7 +71,7 @@ export default function EventCard({ event, onPress, compact = false }: Props) {
             </Text>
           </View>
         </View>
-        <Ionicons name="chevron-forward" size={16} color={theme.textTertiary} />
+        <ChevronRightIcon size={16} color={theme.textTertiary} />
       </TouchableOpacity>
     );
   }
@@ -84,7 +97,7 @@ export default function EventCard({ event, onPress, compact = false }: Props) {
         )}
         {event.isFeatured && (
           <View style={[styles.featuredBadge, { backgroundColor: palette.gold[500] }]}>
-            <Ionicons name="star" size={10} color="#fff" />
+            <StarIcon size={10} color="#fff" />
             <Text style={styles.featuredText}>Featured</Text>
           </View>
         )}
@@ -104,10 +117,10 @@ export default function EventCard({ event, onPress, compact = false }: Props) {
         </Text>
 
         <View style={styles.metaRow}>
-          <Ionicons name="time-outline" size={13} color={theme.textSecondary} />
+          <ClockIcon size={13} color={theme.textSecondary} />
           <Text style={[styles.metaText, { color: theme.textSecondary }]}>{event.time}</Text>
           <View style={styles.dot} />
-          <Ionicons name="location-outline" size={13} color={theme.textSecondary} />
+          <MapPinIcon size={13} color={theme.textSecondary} />
           <Text style={[styles.metaText, { color: theme.textSecondary }]} numberOfLines={1}>
             {event.location.address}
           </Text>
@@ -144,11 +157,9 @@ export default function EventCard({ event, onPress, compact = false }: Props) {
                 : { borderWidth: 1.5, borderColor: theme.primary },
             ]}
           >
-            <Ionicons
-              name={rsvp === "attending" ? "checkmark-circle" : "calendar-outline"}
-              size={15}
-              color={rsvp === "attending" ? "#fff" : theme.primary}
-            />
+            {rsvp === "attending"
+              ? <CheckCircleIcon size={15} color="#fff" />
+              : <CalendarDaysIcon size={15} color={theme.primary} />}
             <Text
               style={[
                 styles.rsvpText,
@@ -168,11 +179,7 @@ export default function EventCard({ event, onPress, compact = false }: Props) {
               },
             ]}
           >
-            <Ionicons
-              name="star-outline"
-              size={15}
-              color={rsvp === "interested" ? theme.primary : theme.textSecondary}
-            />
+            <StarOutlineIcon size={15} color={rsvp === "interested" ? theme.primary : theme.textSecondary} />
             <Text
               style={[
                 styles.rsvpTextSecondary,
@@ -184,7 +191,7 @@ export default function EventCard({ event, onPress, compact = false }: Props) {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.shareBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="share-outline" size={20} color={theme.textSecondary} />
+            <ShareIcon size={20} color={theme.textSecondary} />
           </TouchableOpacity>
         </View>
       </View>

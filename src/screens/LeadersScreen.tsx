@@ -8,7 +8,18 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  PaperAirplaneIcon, CheckCircleIcon, BellIcon, MapPinIcon,
+  CalendarDaysIcon, UsersIcon,
+} from "react-native-heroicons/outline";
+import { ChatBubbleLeftIcon, CheckCircleIcon as CheckCircleIconSolid } from "react-native-heroicons/solid";
+
+const STAT_ICON_MAP: Record<string, React.ComponentType<any>> = {
+  people: UsersIcon,
+  location: MapPinIcon,
+  calendar: CalendarDaysIcon,
+  "checkmark-circle": CheckCircleIcon,
+};
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -95,7 +106,7 @@ export default function LeadersScreen() {
                 onChangeText={setMessage}
               />
               <TouchableOpacity style={[styles.sendBtn, { backgroundColor: message.trim() ? theme.primary : theme.border }]}>
-                <Ionicons name="send" size={16} color="#fff" />
+                <PaperAirplaneIcon size={16} color="#fff" />
               </TouchableOpacity>
             </View>
           </View>
@@ -112,7 +123,7 @@ export default function LeadersScreen() {
               { label: "Issues Resolved", value: "8,400", icon: "checkmark-circle", color: palette.gold[500] },
             ].map((stat) => (
               <View key={stat.label} style={[styles.statItem, { backgroundColor: stat.color + "12" }]}>
-                <Ionicons name={stat.icon as any} size={20} color={stat.color} />
+                {(() => { const IC = STAT_ICON_MAP[stat.icon]; return IC ? <IC size={20} color={stat.color} /> : null; })()}
                 <Text style={[styles.statValue, { color: stat.color }]}>{stat.value}</Text>
                 <Text style={[styles.statLabel, { color: theme.textTertiary }]}>{stat.label}</Text>
               </View>
@@ -139,7 +150,7 @@ function LeaderBanner({ leader, theme }: { leader: Leader; theme: any }) {
           <View style={styles.bannerInfo}>
             <View style={styles.bannerNameRow}>
               <Text style={styles.bannerName}>{leader.user.name}</Text>
-              <Ionicons name="checkmark-circle" size={18} color={palette.gold[400]} />
+              <CheckCircleIconSolid size={18} color={palette.gold[400]} />
             </View>
             <Text style={styles.bannerTitle}>{leader.title}</Text>
             <View style={styles.bannerStats}>
@@ -152,7 +163,7 @@ function LeaderBanner({ leader, theme }: { leader: Leader; theme: any }) {
 
         {leader.recentMessage && (
           <View style={styles.bannerMessage}>
-            <Ionicons name="chatbubble" size={14} color="rgba(255,255,255,0.7)" />
+            <ChatBubbleLeftIcon size={14} color="rgba(255,255,255,0.7)" />
             <Text style={styles.bannerMessageText} numberOfLines={2}>{leader.recentMessage}</Text>
           </View>
         )}
@@ -170,7 +181,7 @@ function LeaderBanner({ leader, theme }: { leader: Leader; theme: any }) {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bannerShareBtn}>
-            <Ionicons name="notifications-outline" size={18} color="#fff" />
+            <BellIcon size={18} color="#fff" />
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -203,7 +214,7 @@ function LeaderChannelCard({
       <View style={styles.leaderCardInfo}>
         <View style={styles.leaderCardNameRow}>
           <Text style={[styles.leaderCardName, { color: theme.textPrimary }]}>{leader.user.name}</Text>
-          <Ionicons name="checkmark-circle" size={14} color={theme.primary} />
+          <CheckCircleIcon size={14} color={theme.primary} />
           <View style={[styles.priorityBadge, { backgroundColor: priorityColor(leader.priority) + "20" }]}>
             <Text style={[styles.priorityText, { color: priorityColor(leader.priority) }]}>
               {leader.priority}

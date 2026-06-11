@@ -10,8 +10,21 @@ import {
   StatusBar,
   Animated,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  CameraIcon,
+  CheckIcon,
+  PlusIcon,
+  ChatBubbleLeftIcon,
+  PaperAirplaneIcon,
+  BookmarkIcon,
+  EllipsisVerticalIcon,
+  MapPinIcon,
+  EyeIcon,
+  MusicalNoteIcon,
+  HeartIcon as HeartOutlineIcon,
+} from "react-native-heroicons/outline";
+import { HeartIcon, CheckCircleIcon } from "react-native-heroicons/solid";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Reel } from "@/types";
@@ -81,7 +94,7 @@ function ReelItem({ reel, isActive }: { reel: Reel; isActive: boolean }) {
       <View style={[styles.topBar, { paddingTop: insets.top + 24 }]}>
         <Text style={styles.reelsTitle}>Reels</Text>
         <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Ionicons name="camera-outline" size={24} color="#fff" />
+          <CameraIcon size={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
@@ -94,40 +107,36 @@ function ReelItem({ reel, isActive }: { reel: Reel; isActive: boolean }) {
             onPress={() => setFollowing((v) => !v)}
             style={[styles.followBtn, { backgroundColor: following ? "transparent" : palette.saffron[500] }]}
           >
-            <Ionicons
-              name={following ? "checkmark" : "add"}
-              size={12}
-              color="#fff"
-            />
+            {following ? <CheckIcon size={12} color="#fff" /> : <PlusIcon size={12} color="#fff" />}
           </TouchableOpacity>
         </View>
 
         <ActionButton
-          icon={liked ? "heart" : "heart-outline"}
+          Icon={liked ? HeartIcon : HeartOutlineIcon}
           count={formatCount(likeCount)}
           color={liked ? "#EF4444" : "#fff"}
           onPress={handleLike}
         />
         <ActionButton
-          icon="chatbubble-outline"
+          Icon={ChatBubbleLeftIcon}
           count={formatCount(reel.stats.comments)}
           color="#fff"
           onPress={() => {}}
         />
         <ActionButton
-          icon="paper-plane-outline"
+          Icon={PaperAirplaneIcon}
           count={formatCount(reel.stats.shares)}
           color="#fff"
           onPress={() => {}}
         />
         <ActionButton
-          icon="bookmark-outline"
+          Icon={BookmarkIcon}
           count=""
           color="#fff"
           onPress={() => {}}
         />
         <TouchableOpacity style={styles.moreBtn}>
-          <Ionicons name="ellipsis-vertical" size={20} color="#fff" />
+          <EllipsisVerticalIcon size={20} color="#fff" />
         </TouchableOpacity>
 
         {/* Music disc */}
@@ -143,7 +152,7 @@ function ReelItem({ reel, isActive }: { reel: Reel; isActive: boolean }) {
         <View style={styles.authorRow}>
           <Text style={styles.authorName}>{reel.author.name}</Text>
           {reel.author.isVerified && (
-            <Ionicons name="checkmark-circle" size={15} color={palette.saffron[400]} />
+            <CheckCircleIcon size={15} color={palette.saffron[400]} />
           )}
           <TouchableOpacity
             onPress={() => setFollowing((v) => !v)}
@@ -174,17 +183,17 @@ function ReelItem({ reel, isActive }: { reel: Reel; isActive: boolean }) {
 
         {/* Location + views */}
         <View style={styles.metaRow}>
-          <Ionicons name="location-outline" size={13} color="rgba(255,255,255,0.7)" />
+          <MapPinIcon size={13} color="rgba(255,255,255,0.7)" />
           <Text style={styles.metaText}>{reel.location.label || reel.location.constituency}</Text>
           <View style={styles.dot} />
-          <Ionicons name="eye-outline" size={13} color="rgba(255,255,255,0.7)" />
+          <EyeIcon size={13} color="rgba(255,255,255,0.7)" />
           <Text style={styles.metaText}>{formatCount(reel.stats.views)} views</Text>
         </View>
 
         {/* Music */}
         {reel.music && (
           <View style={styles.musicRow}>
-            <Ionicons name="musical-notes" size={13} color="rgba(255,255,255,0.8)" />
+            <MusicalNoteIcon size={13} color="rgba(255,255,255,0.8)" />
             <Text style={styles.musicText}>{reel.music}</Text>
           </View>
         )}
@@ -201,18 +210,18 @@ function ReelItem({ reel, isActive }: { reel: Reel; isActive: boolean }) {
         ]}
         pointerEvents="none"
       >
-        <Ionicons name="heart" size={80} color="#EF4444" />
+        <HeartIcon size={80} color="#EF4444" />
       </Animated.View>
     </View>
   );
 }
 
 function ActionButton({
-  icon, count, color, onPress,
-}: { icon: string; count: string; color: string; onPress: () => void }) {
+  Icon, count, color, onPress,
+}: { Icon: React.ComponentType<any>; count: string; color: string; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.actionBtn} onPress={onPress}>
-      <Ionicons name={icon as any} size={28} color={color} />
+      <Icon size={28} color={color} />
       {count !== "" && <Text style={styles.actionCount}>{count}</Text>}
     </TouchableOpacity>
   );

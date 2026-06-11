@@ -7,7 +7,21 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  CalendarDaysIcon, MapPinIcon, MegaphoneIcon, AcademicCapIcon,
+  SparklesIcon, UsersIcon, RocketLaunchIcon, PlusIcon,
+  ChevronLeftIcon, ChevronRightIcon, ListBulletIcon,
+} from "react-native-heroicons/outline";
+
+const FILTER_ICON_MAP: Record<string, React.ComponentType<any>> = {
+  calendar: CalendarDaysIcon,
+  location: MapPinIcon,
+  megaphone: MegaphoneIcon,
+  school: AcademicCapIcon,
+  leaf: SparklesIcon,
+  people: UsersIcon,
+  rocket: RocketLaunchIcon,
+};
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/contexts/ThemeContext";
@@ -59,14 +73,10 @@ export default function EventsScreen() {
             onPress={() => setViewMode((v) => (v === "list" ? "calendar" : "list"))}
             style={[styles.viewToggle, { backgroundColor: theme.surfaceSecondary }]}
           >
-            <Ionicons
-              name={viewMode === "list" ? "calendar-outline" : "list-outline"}
-              size={20}
-              color={theme.textPrimary}
-            />
+            {viewMode === "list" ? <CalendarDaysIcon size={20} color={theme.textPrimary} /> : <ListBulletIcon size={20} color={theme.textPrimary} />}
           </TouchableOpacity>
           <TouchableOpacity style={[styles.createBtn, { backgroundColor: theme.primary }]}>
-            <Ionicons name="add" size={18} color="#fff" />
+            <PlusIcon size={18} color="#fff" />
             <Text style={styles.createBtnText}>Create</Text>
           </TouchableOpacity>
         </View>
@@ -86,11 +96,7 @@ export default function EventsScreen() {
                   : { backgroundColor: theme.surfaceSecondary, borderColor: theme.border, borderWidth: 1 },
               ]}
             >
-              <Ionicons
-                name={f.icon as any}
-                size={13}
-                color={activeFilter === f.id ? "#fff" : theme.textSecondary}
-              />
+              {(() => { const IC = FILTER_ICON_MAP[f.icon]; return IC ? <IC size={13} color={activeFilter === f.id ? "#fff" : theme.textSecondary} /> : null; })()}
               <Text
                 style={[
                   styles.filterLabel,
@@ -147,10 +153,10 @@ export default function EventsScreen() {
             <Text style={[styles.calendarTitle, { color: theme.textPrimary }]}>June 2024</Text>
             <View style={styles.calendarNav}>
               <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="chevron-back" size={18} color={theme.textSecondary} />
+                <ChevronLeftIcon size={18} color={theme.textSecondary} />
               </TouchableOpacity>
               <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name="chevron-forward" size={18} color={theme.textSecondary} />
+                <ChevronRightIcon size={18} color={theme.textSecondary} />
               </TouchableOpacity>
             </View>
           </View>
@@ -192,7 +198,7 @@ export default function EventsScreen() {
 
         {/* Create event CTA */}
         <View style={[styles.createCTA, { backgroundColor: theme.primaryLight, borderColor: theme.primary + "30" }]}>
-          <Ionicons name="calendar" size={28} color={theme.primary} />
+          <CalendarDaysIcon size={28} color={theme.primary} />
           <Text style={[styles.createCTATitle, { color: theme.textPrimary }]}>Organize an Event</Text>
           <Text style={[styles.createCTASub, { color: theme.textSecondary }]}>
             Rally your constituency. Create meetups, drives, and campaigns.

@@ -4,7 +4,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { useFonts } from "expo-font";
-import { Ionicons, MaterialIcons, FontAwesome5, Feather } from "@expo/vector-icons";
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -17,12 +16,7 @@ export default function App() {
   const [splashDone, setSplashDone] = useState(false);
   const [ready, setReady] = useState(false);
 
-  const [fontsLoaded, fontError] = useFonts({
-    ...Ionicons.font,
-    ...MaterialIcons.font,
-    ...FontAwesome5.font,
-    ...Feather.font,
-  });
+  const [fontsLoaded, fontError] = useFonts({});
 
   useEffect(() => {
     // Proceed when fonts load, error, or after 3s timeout (prevents infinite spinner on Vercel)

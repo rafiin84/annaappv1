@@ -8,7 +8,8 @@ import {
   Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
+import { PlusIcon } from "react-native-heroicons/outline";
+import { StarIcon } from "react-native-heroicons/solid";
 
 import { Story } from "@/types";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -38,7 +39,7 @@ export default function StoryBar({ stories, onStoryPress, onAddStory }: Props) {
             style={styles.avatar}
           />
           <View style={[styles.addIcon, { backgroundColor: theme.primary }]}>
-            <Ionicons name="add" size={12} color="#fff" />
+            <PlusIcon size={12} color="#fff" />
           </View>
         </View>
         <Text style={[styles.label, { color: theme.textSecondary }]} numberOfLines={1}>
@@ -74,7 +75,7 @@ export default function StoryBar({ stories, onStoryPress, onAddStory }: Props) {
                 <Image source={{ uri: story.user.avatar }} style={styles.avatar} />
                 {isLeader && (
                   <View style={[styles.leaderBadge, { backgroundColor: palette.gold[500] }]}>
-                    <Ionicons name="star" size={7} color="#fff" />
+                    <StarIcon size={7} color="#fff" />
                   </View>
                 )}
               </View>

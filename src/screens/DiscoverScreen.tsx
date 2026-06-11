@@ -9,7 +9,17 @@ import {
   Image,
   FlatList,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  Squares2X2Icon,
+  CalendarDaysIcon,
+  PlayCircleIcon,
+  RocketLaunchIcon,
+  MagnifyingGlassIcon,
+  XCircleIcon,
+  ArrowTrendingUpIcon,
+  ChevronRightIcon,
+} from "react-native-heroicons/outline";
+import { UsersIcon, ExclamationTriangleIcon } from "react-native-heroicons/solid";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/contexts/ThemeContext";
@@ -35,13 +45,13 @@ const SUGGESTED_PEOPLE = [
   { id: "u5", name: "Arjun S", handle: "arjun_volunteer", avatar: "https://randomuser.me/api/portraits/men/73.jpg", role: "Volunteer, Coimbatore North", followers: 567, isFollowing: false },
 ];
 
-const CATEGORIES = [
-  { id: "all", label: "All", icon: "apps" },
-  { id: "events", label: "Events", icon: "calendar" },
-  { id: "people", label: "People", icon: "people" },
-  { id: "videos", label: "Videos", icon: "play-circle" },
-  { id: "issues", label: "Issues", icon: "warning" },
-  { id: "campaigns", label: "Campaigns", icon: "rocket" },
+const CATEGORIES: { id: string; label: string; Icon: React.ComponentType<any> }[] = [
+  { id: "all",       label: "All",       Icon: Squares2X2Icon },
+  { id: "events",    label: "Events",    Icon: CalendarDaysIcon },
+  { id: "people",    label: "People",    Icon: UsersIcon },
+  { id: "videos",    label: "Videos",    Icon: PlayCircleIcon },
+  { id: "issues",    label: "Issues",    Icon: ExclamationTriangleIcon },
+  { id: "campaigns", label: "Campaigns", Icon: RocketLaunchIcon },
 ];
 
 export default function DiscoverScreen() {
@@ -58,7 +68,7 @@ export default function DiscoverScreen() {
       <View style={[styles.header, { backgroundColor: theme.surface, paddingTop: insets.top + 8 }]}>
         <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>Discover</Text>
         <View style={[styles.searchBar, { backgroundColor: theme.surfaceSecondary, borderColor: focused ? theme.primary : theme.border }]}>
-          <Ionicons name="search" size={18} color={theme.textSecondary} />
+          <MagnifyingGlassIcon size={18} color={theme.textSecondary} />
           <TextInput
             style={[styles.searchInput, { color: theme.textPrimary }]}
             placeholder={`Search ${location.constituency}, ${location.district}...`}
@@ -70,7 +80,7 @@ export default function DiscoverScreen() {
           />
           {query.length > 0 && (
             <TouchableOpacity onPress={() => setQuery("")}>
-              <Ionicons name="close-circle" size={18} color={theme.textTertiary} />
+              <XCircleIcon size={18} color={theme.textTertiary} />
             </TouchableOpacity>
           )}
         </View>
@@ -90,8 +100,7 @@ export default function DiscoverScreen() {
                   : { backgroundColor: theme.surfaceSecondary, borderColor: theme.border, borderWidth: 1 },
               ]}
             >
-              <Ionicons
-                name={cat.icon as any}
+              <cat.Icon
                 size={14}
                 color={activeCategory === cat.id ? "#fff" : theme.textSecondary}
               />
@@ -122,7 +131,7 @@ export default function DiscoverScreen() {
                   <Text style={[styles.trendingTag, { color: theme.textPrimary }]}>#{item.tag}</Text>
                   <Text style={[styles.trendingPosts, { color: theme.textTertiary }]}>{item.posts} posts</Text>
                 </View>
-                <Ionicons name="trending-up" size={16} color={theme.primary} />
+                <ArrowTrendingUpIcon size={16} color={theme.primary} />
               </TouchableOpacity>
             ))}
           </View>
@@ -160,7 +169,7 @@ export default function DiscoverScreen() {
                     📍 {event.location.address}
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={16} color={theme.textTertiary} />
+                <ChevronRightIcon size={16} color={theme.textTertiary} />
               </TouchableOpacity>
             );
           })}

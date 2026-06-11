@@ -7,7 +7,23 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  ArrowLeftIcon,
+  BellSlashIcon,
+  UserPlusIcon,
+  CalendarDaysIcon,
+  MegaphoneIcon,
+  TrophyIcon,
+  RocketLaunchIcon,
+  AtSymbolIcon,
+} from "react-native-heroicons/outline";
+import {
+  HeartIcon,
+  ChatBubbleLeftIcon,
+  UsersIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+} from "react-native-heroicons/solid";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 
@@ -18,17 +34,17 @@ import { palette } from "@/theme/colors";
 
 const NOTIF_TABS = ["All", "Unread", "Local", "Leaders"] as const;
 
-const TYPE_CONFIG: Record<string, { icon: string; color: string; bg: string }> = {
-  like:             { icon: "heart",         color: "#EF4444", bg: "#EF444420" },
-  comment:          { icon: "chatbubble",    color: "#3B82F6", bg: "#3B82F620" },
-  follow:           { icon: "person-add",    color: "#22C55E", bg: "#22C55E20" },
-  event_reminder:   { icon: "calendar",      color: palette.saffron[500], bg: palette.saffron[500] + "20" },
-  leader_message:   { icon: "megaphone",     color: palette.gold[500], bg: palette.gold[500] + "20" },
-  community_update: { icon: "people",        color: "#8B5CF6", bg: "#8B5CF620" },
-  achievement:      { icon: "trophy",        color: palette.gold[500], bg: palette.gold[500] + "20" },
-  local_alert:      { icon: "warning",       color: "#F59E0B", bg: "#F59E0B20" },
-  campaign_update:  { icon: "rocket",        color: palette.saffron[500], bg: palette.saffron[500] + "20" },
-  mention:          { icon: "at",            color: "#3B82F6", bg: "#3B82F620" },
+const TYPE_CONFIG: Record<string, { Icon: React.ComponentType<any>; color: string; bg: string }> = {
+  like:             { Icon: HeartIcon,             color: "#EF4444",            bg: "#EF444420" },
+  comment:          { Icon: ChatBubbleLeftIcon,    color: "#3B82F6",            bg: "#3B82F620" },
+  follow:           { Icon: UserPlusIcon,          color: "#22C55E",            bg: "#22C55E20" },
+  event_reminder:   { Icon: CalendarDaysIcon,      color: palette.saffron[500], bg: palette.saffron[500] + "20" },
+  leader_message:   { Icon: MegaphoneIcon,         color: palette.gold[500],    bg: palette.gold[500] + "20" },
+  community_update: { Icon: UsersIcon,             color: "#8B5CF6",            bg: "#8B5CF620" },
+  achievement:      { Icon: TrophyIcon,            color: palette.gold[500],    bg: palette.gold[500] + "20" },
+  local_alert:      { Icon: ExclamationTriangleIcon, color: "#F59E0B",          bg: "#F59E0B20" },
+  campaign_update:  { Icon: RocketLaunchIcon,      color: palette.saffron[500], bg: palette.saffron[500] + "20" },
+  mention:          { Icon: AtSymbolIcon,          color: "#3B82F6",            bg: "#3B82F620" },
 };
 
 export default function NotificationsScreen() {
@@ -69,11 +85,11 @@ export default function NotificationsScreen() {
             <View>
               <Image source={{ uri: item.actor.avatar }} style={styles.notifAvatar} />
               <View style={[styles.notifTypeDot, { backgroundColor: config.color }]}>
-                <Ionicons name={config.icon as any} size={8} color="#fff" />
+                <config.Icon size={8} color="#fff" />
               </View>
             </View>
           ) : (
-            <Ionicons name={config.icon as any} size={22} color={config.color} />
+            <config.Icon size={22} color={config.color} />
           )}
         </View>
 
@@ -104,7 +120,7 @@ export default function NotificationsScreen() {
           onPress={() => navigation.goBack()}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="arrow-back" size={24} color={theme.textPrimary} />
+          <ArrowLeftIcon size={24} color={theme.textPrimary} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>Notifications</Text>
@@ -148,7 +164,7 @@ export default function NotificationsScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Ionicons name="notifications-off-outline" size={48} color={theme.textTertiary} />
+            <BellSlashIcon size={48} color={theme.textTertiary} />
             <Text style={[styles.emptyText, { color: theme.textSecondary }]}>No notifications here</Text>
           </View>
         }

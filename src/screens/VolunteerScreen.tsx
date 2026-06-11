@@ -7,7 +7,28 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  CalendarDaysIcon,
+  UserIcon,
+  DevicePhoneMobileIcon,
+  CubeIcon,
+  MegaphoneIcon,
+  ExclamationTriangleIcon,
+  CameraIcon,
+  ShareIcon,
+  UserPlusIcon,
+  ArrowUpIcon,
+  PlusCircleIcon,
+  ClockIcon,
+  TruckIcon,
+  BeakerIcon,
+  TrashIcon,
+  ShieldCheckIcon,
+  AcademicCapIcon,
+  EllipsisHorizontalIcon,
+  HeartIcon,
+} from "react-native-heroicons/outline";
+import { StarIcon, UsersIcon, BoltIcon } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -66,10 +87,10 @@ export default function VolunteerScreen() {
             <Text style={styles.xpProgressText}>2,840 / 5,000 XP to Level 4</Text>
           </View>
           <View style={styles.xpQuickStats}>
-            <QuickStat icon="calendar" label="Events" value="23" />
-            <QuickStat icon="warning" label="Issues" value="12" />
-            <QuickStat icon="people" label="Recruited" value="8" />
-            <QuickStat icon="time" label="Hours" value="108" />
+            <QuickStat Icon={CalendarDaysIcon} label="Events" value="23" />
+            <QuickStat Icon={ExclamationTriangleIcon} label="Issues" value="12" />
+            <QuickStat Icon={UsersIcon} label="Recruited" value="8" />
+            <QuickStat Icon={ClockIcon} label="Hours" value="108" />
           </View>
         </LinearGradient>
       </View>
@@ -104,10 +125,10 @@ export default function VolunteerScreen() {
   );
 }
 
-function QuickStat({ icon, label, value }: { icon: string; label: string; value: string }) {
+function QuickStat({ Icon, label, value }: { Icon: React.ComponentType<any>; label: string; value: string }) {
   return (
     <View style={styles.quickStat}>
-      <Ionicons name={icon as any} size={14} color="rgba(255,255,255,0.8)" />
+      <Icon size={14} color="rgba(255,255,255,0.8)" />
       <Text style={styles.quickStatValue}>{value}</Text>
       <Text style={styles.quickStatLabel}>{label}</Text>
     </View>
@@ -117,12 +138,12 @@ function QuickStat({ icon, label, value }: { icon: string; label: string; value:
 function TasksTab({ theme }: { theme: any }) {
   const [tasks, setTasks] = useState(MOCK_VOLUNTEER_TASKS);
 
-  const CATEGORY_ICONS: Record<string, string> = {
-    outreach: "megaphone",
-    event_support: "calendar",
-    digital: "phone-portrait",
-    field: "walk",
-    logistics: "cube",
+  const CATEGORY_ICONS: Record<string, React.ComponentType<any>> = {
+    outreach: MegaphoneIcon,
+    event_support: CalendarDaysIcon,
+    digital: DevicePhoneMobileIcon,
+    field: UserIcon,
+    logistics: CubeIcon,
   };
 
   return (
@@ -130,16 +151,16 @@ function TasksTab({ theme }: { theme: any }) {
       {/* Quick action row */}
       <View style={styles.quickActionRow}>
         {[
-          { icon: "warning-outline", label: "Report Issue", color: "#EF4444" },
-          { icon: "camera-outline",  label: "Document Event", color: "#3B82F6" },
-          { icon: "share-outline",   label: "Share Post",    color: "#22C55E" },
-          { icon: "person-add",      label: "Recruit",       color: palette.gold[500] },
+          { Icon: ExclamationTriangleIcon, label: "Report Issue",   color: "#EF4444" },
+          { Icon: CameraIcon,              label: "Document Event", color: "#3B82F6" },
+          { Icon: ShareIcon,               label: "Share Post",     color: "#22C55E" },
+          { Icon: UserPlusIcon,            label: "Recruit",        color: palette.gold[500] },
         ].map((action) => (
           <TouchableOpacity
             key={action.label}
             style={[styles.quickAction, { backgroundColor: action.color + "15" }]}
           >
-            <Ionicons name={action.icon as any} size={20} color={action.color} />
+            <action.Icon size={20} color={action.color} />
             <Text style={[styles.quickActionLabel, { color: theme.textPrimary }]}>{action.label}</Text>
           </TouchableOpacity>
         ))}
@@ -153,7 +174,7 @@ function TasksTab({ theme }: { theme: any }) {
         >
           <View style={styles.taskTop}>
             <View style={[styles.taskCatIcon, { backgroundColor: theme.primaryLight }]}>
-              <Ionicons name={CATEGORY_ICONS[task.category] as any} size={18} color={theme.primary} />
+              {(() => { const IC = CATEGORY_ICONS[task.category]; return IC ? <IC size={18} color={theme.primary} /> : null; })()}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.taskTitle, { color: theme.textPrimary }]}>{task.title}</Text>
@@ -164,7 +185,7 @@ function TasksTab({ theme }: { theme: any }) {
           </View>
           <View style={styles.taskBottom}>
             <View style={[styles.xpChip, { backgroundColor: palette.gold[500] + "20" }]}>
-              <Ionicons name="star" size={10} color={palette.gold[600]} />
+              <StarIcon size={10} color={palette.gold[600]} />
               <Text style={[styles.xpChipText, { color: palette.gold[600] }]}>+{task.pointsReward} XP</Text>
             </View>
             <View style={[styles.diffChip, { backgroundColor: theme.surfaceSecondary }]}>
@@ -219,9 +240,15 @@ function LocalIssuesTab({ theme }: { theme: any }) {
     resolved: { color: "#22C55E", label: "Resolved" },
   };
 
-  const CATEGORY_ICONS: Record<string, string> = {
-    road: "car", water: "water", electricity: "flash", sanitation: "trash",
-    safety: "shield", education: "school", health: "medical", other: "ellipsis-horizontal",
+  const ISSUE_CATEGORY_ICONS: Record<string, React.ComponentType<any>> = {
+    road:        TruckIcon,
+    water:       BeakerIcon,
+    electricity: BoltIcon,
+    sanitation:  TrashIcon,
+    safety:      ShieldCheckIcon,
+    education:   AcademicCapIcon,
+    health:      HeartIcon,
+    other:       EllipsisHorizontalIcon,
   };
 
   return (
@@ -246,7 +273,7 @@ function LocalIssuesTab({ theme }: { theme: any }) {
           <View key={issue.id} style={[styles.issueCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
             <View style={styles.issueHeader}>
               <View style={[styles.issueCatIcon, { backgroundColor: palette.saffron[500] + "15" }]}>
-                <Ionicons name={CATEGORY_ICONS[issue.category] as any} size={18} color={palette.saffron[500]} />
+                {(() => { const IC = ISSUE_CATEGORY_ICONS[issue.category]; return IC ? <IC size={18} color={palette.saffron[500]} /> : null; })()}
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.issueTitle, { color: theme.textPrimary }]}>{issue.title}</Text>
@@ -271,7 +298,7 @@ function LocalIssuesTab({ theme }: { theme: any }) {
                 style={[styles.upvoteBtn, { backgroundColor: issue.upvoted ? theme.primaryLight : theme.surfaceSecondary }]}
                 onPress={() => setIssues((prev) => prev.map((i) => i.id === issue.id ? { ...i, upvoted: !i.upvoted, upvotes: i.upvoted ? i.upvotes - 1 : i.upvotes + 1 } : i))}
               >
-                <Ionicons name="arrow-up" size={14} color={issue.upvoted ? theme.primary : theme.textSecondary} />
+                <ArrowUpIcon size={14} color={issue.upvoted ? theme.primary : theme.textSecondary} />
                 <Text style={[styles.upvoteCount, { color: issue.upvoted ? theme.primary : theme.textSecondary }]}>
                   {formatCount(issue.upvotes)}
                 </Text>
@@ -282,7 +309,7 @@ function LocalIssuesTab({ theme }: { theme: any }) {
       })}
 
       <TouchableOpacity style={[styles.reportCTA, { backgroundColor: theme.primary }]}>
-        <Ionicons name="add-circle" size={20} color="#fff" />
+        <PlusCircleIcon size={20} color="#fff" />
         <Text style={styles.reportCTAText}>Report a Local Issue</Text>
       </TouchableOpacity>
     </View>

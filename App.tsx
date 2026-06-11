@@ -1,5 +1,5 @@
 import "./global.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
@@ -15,16 +15,26 @@ import AppSplash from "@/components/AppSplash";
 
 export default function App() {
   const [splashDone, setSplashDone] = useState(false);
+  const [ready, setReady] = useState(false);
 
-  // Preload all icon fonts before rendering — prevents blank icons on web
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     ...Ionicons.font,
     ...MaterialIcons.font,
     ...FontAwesome5.font,
     ...Feather.font,
   });
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    // Proceed when fonts load, error, or after 3s timeout (prevents infinite spinner on Vercel)
+    if (fontsLoaded || fontError) {
+      setReady(true);
+      return;
+    }
+    const t = setTimeout(() => setReady(true), 3000);
+    return () => clearTimeout(t);
+  }, [fontsLoaded, fontError]);
+
+  if (!ready) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="#2563EB" />
@@ -36,14 +46,14 @@ export default function App() {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <AuthProvider>
-        <ThemeProvider>
-          <LocationProvider>
-            <ScrollProvider>
-              <RootNavigator />
-              {!splashDone && <AppSplash onDone={() => setSplashDone(true)} />}
-            </ScrollProvider>
-          </LocationProvider>
-        </ThemeProvider>
+          <ThemeProvider>
+            <LocationProvider>
+              <ScrollProvider>
+                <RootNavigator />
+                {!splashDone && <AppSplash onDone={() => setSplashDone(true)} />}
+              </ScrollProvider>
+            </LocationProvider>
+          </ThemeProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

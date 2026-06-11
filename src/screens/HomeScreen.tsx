@@ -45,7 +45,6 @@ export default function HomeScreen() {
 
   const feedItems: FeedItem[] = [
     { type: "stories" },
-    { type: "section_header", title: `🏘️ ${location.constituency}`, subtitle: "Happening near you" },
     { type: "post", data: MOCK_POSTS[1] },
     { type: "post", data: MOCK_POSTS[2] },
     { type: "event_inline", data: MOCK_EVENTS[0] },

@@ -158,8 +158,8 @@ export const MOCK_POSTS: Post[] = [
     },
     content: "Our Coimbatore North constituency volunteers cleaned the entire RS Puram market area today. 60+ volunteers, 3 hours, 2 tonnes of waste removed! This is what community action looks like 💪 #CoimbatoreProud",
     media: [
-      { type: "image", url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800", aspectRatio: 1.33 },
-      { type: "image", url: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=800", aspectRatio: 1.33 },
+      { type: "image", url: "https://source.unsplash.com/800x600/?india,cleanup,volunteers", aspectRatio: 1.33 },
+      { type: "image", url: "https://source.unsplash.com/800x600/?india,community,service", aspectRatio: 1.33 },
     ],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North", label: "RS Puram, Coimbatore North" },
     hashtags: ["CoimbatoreNorth", "CleanCBE", "WeTheLeaders"],
@@ -272,7 +272,7 @@ export const MOCK_POSTS: Post[] = [
       role: "coordinator",
     },
     content: "⚠️ Issue Reported: The main road at Gandhipuram junction has had a pothole for 3 weeks now. Two accidents have already happened. I've submitted this to the municipal office. Let's get 500 upvotes so it gets escalated immediately.\n\nTag your local ward representatives! 📍 Gandhipuram, Coimbatore North",
-    media: [{ type: "image", url: "https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=800", aspectRatio: 1.33 }],
+    media: [{ type: "image", url: "https://source.unsplash.com/800x600/?india,road,street,pothole", aspectRatio: 1.33 }],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North", label: "Gandhipuram Junction" },
     hashtags: ["LocalIssue", "CoimbatoreNorth", "FixOurRoads"],
     mentions: ["@cbe_municipal"],
@@ -877,7 +877,7 @@ export const MOCK_ISSUES: LocalIssue[] = [
     title: "Large pothole at Gandhipuram Junction",
     description: "Dangerous pothole has caused 2 accidents in 3 weeks. Municipal office contacted but no response. Needs immediate repair.",
     category: "road",
-    images: ["https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=600"],
+    images: ["https://source.unsplash.com/800x600/?india,road,street,pothole"],
     reportedBy: { id: "u4", name: "Lakshmi V", avatar: LAKSHMI_AVATAR },
     location: {
       state: "Tamil Nadu",

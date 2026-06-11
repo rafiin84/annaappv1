@@ -302,13 +302,15 @@ const CENTERED_SCREENS: Record<string, React.ComponentType<any>> = Object.fromEn
 export default function BottomTabNavigator() {
   const { width } = useWindowDimensions();
   const { theme, isDark } = useTheme();
-  const { showRightPanel, rightPanelLeft } = useDesktopPositions(width);
+  const { isDesktop, showRightPanel, rightPanelLeft } = useDesktopPositions(width);
+  const contentMarginH = isDesktop ? Math.max(0, (width - CONTENT_MAX_W) / 2) : 0;
 
   return (
     <>
       <Tab.Navigator
         screenOptions={{ headerShown: false }}
         tabBar={(props) => <ResponsiveTabBar {...props} />}
+        sceneContainerStyle={isDesktop ? { marginLeft: contentMarginH, marginRight: contentMarginH } : undefined}
       >
         {TABS.map((tab) => (
           <Tab.Screen

@@ -1,8 +1,30 @@
 import { User, Story, Post, Reel, Event, Community, Leader, LocalIssue, Notification, VolunteerTask } from "@/types";
 
-// ─── Real profile image from Wikipedia Commons ───────────────────────────────
+// ─── Annamalai photos (Wikipedia Commons — confirmed stable) ─────────────────
 const ANNAMALAI_PHOTO =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/250px-K._Annamalai_at_padayatra.jpg";
+const ANNAMALAI_WIDE =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/800px-K._Annamalai_at_padayatra.jpg";
+const ANNAMALAI_MED =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/600px-K._Annamalai_at_padayatra.jpg";
+
+// ─── Tamil volunteer avatars — initial-based, no foreign faces ───────────────
+const PRIYA_AVATAR   = "https://ui-avatars.com/api/?name=Priya+Raj&background=DC2626&color=fff&size=128&bold=true";
+const MURUGAN_AVATAR = "https://ui-avatars.com/api/?name=Murugan+K&background=2563EB&color=fff&size=128&bold=true";
+const LAKSHMI_AVATAR = "https://ui-avatars.com/api/?name=Lakshmi+V&background=059669&color=fff&size=128&bold=true";
+const ARJUN_AVATAR   = "https://ui-avatars.com/api/?name=Arjun+S&background=D97706&color=fff&size=128&bold=true";
+const DEEPA_AVATAR   = "https://ui-avatars.com/api/?name=Deepa+M&background=7C3AED&color=fff&size=128&bold=true";
+const SHANKAR_AVATAR = "https://ui-avatars.com/api/?name=Shankar+Rajan&background=B45309&color=fff&size=128&bold=true";
+const VIMALA_AVATAR  = "https://ui-avatars.com/api/?name=Vimala+Devi&background=BE185D&color=fff&size=128&bold=true";
+
+// ─── Tamil Nadu cover / scene images ─────────────────────────────────────────
+const TN_COVER_CBE   = "https://source.unsplash.com/800x450/?coimbatore,india";
+const TN_COVER_MAS   = "https://source.unsplash.com/800x450/?chennai,india";
+const TN_COVER_MDU   = "https://source.unsplash.com/800x450/?madurai,temple,india";
+const TN_COVER_STATE = "https://source.unsplash.com/800x450/?tamilnadu,india";
+const TN_COVER_YOUTH = "https://source.unsplash.com/800x450/?youth,india,meeting";
+const TN_COVER_RALLY = ANNAMALAI_MED;
+const TN_COVER_CLEAN = "https://source.unsplash.com/800x450/?cleanup,volunteers,india";
 
 // ─── Logged-in volunteer user ─────────────────────────────────────────────────
 export const CURRENT_USER: User = {
@@ -10,7 +32,7 @@ export const CURRENT_USER: User = {
   name: "K. Annamalai",
   handle: "annamalai_k",
   avatar: ANNAMALAI_PHOTO,
-  coverPhoto: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800",
+  coverPhoto: ANNAMALAI_WIDE,
   bio: "A common man in search of good politics!",
   role: "leader",
   volunteerLevel: 5,
@@ -40,30 +62,9 @@ export const CURRENT_USER: User = {
 // ─── Stories ──────────────────────────────────────────────────────────────────
 export const MOCK_STORIES: Story[] = [
   {
-    id: "s0",
-    user: {
-      id: "u_annamalai",
-      name: "K. Annamalai",
-      avatar: ANNAMALAI_PHOTO,
-      isVerified: true,
-      isLeader: true,
-    },
-    media: {
-      type: "image",
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/400px-K._Annamalai_at_padayatra.jpg",
-      thumbnail: ANNAMALAI_PHOTO,
-    },
-    location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore" },
-    duration: 15,
-    viewedBy: [],
-    createdAt: "2026-06-10T07:00:00Z",
-    expiresAt: "2026-06-11T07:00:00Z",
-    label: "Morning message",
-  },
-  {
     id: "s1",
-    user: { id: "u2", name: "Priya Raj", avatar: "https://randomuser.me/api/portraits/women/44.jpg", isVerified: false, isLeader: false },
-    media: { type: "image", url: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400", thumbnail: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=200" },
+    user: { id: "u2", name: "Priya Raj", avatar: PRIYA_AVATAR, isVerified: false, isLeader: false },
+    media: { type: "image", url: TN_COVER_CBE, thumbnail: TN_COVER_CBE },
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North" },
     duration: 10,
     viewedBy: ["u_self"],
@@ -72,8 +73,8 @@ export const MOCK_STORIES: Story[] = [
   },
   {
     id: "s2",
-    user: { id: "u3", name: "Murugan K", avatar: "https://randomuser.me/api/portraits/men/56.jpg", isVerified: false, isLeader: false },
-    media: { type: "image", url: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=400", thumbnail: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=200" },
+    user: { id: "u3", name: "Murugan K", avatar: MURUGAN_AVATAR, isVerified: false, isLeader: false },
+    media: { type: "image", url: TN_COVER_YOUTH, thumbnail: TN_COVER_YOUTH },
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore South" },
     duration: 12,
     viewedBy: [],
@@ -82,8 +83,8 @@ export const MOCK_STORIES: Story[] = [
   },
   {
     id: "s3",
-    user: { id: "u4", name: "Lakshmi V", avatar: "https://randomuser.me/api/portraits/women/68.jpg", isVerified: true, isLeader: false },
-    media: { type: "image", url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400", thumbnail: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=200" },
+    user: { id: "u4", name: "Lakshmi V", avatar: LAKSHMI_AVATAR, isVerified: true, isLeader: false },
+    media: { type: "image", url: TN_COVER_MDU, thumbnail: TN_COVER_MDU },
     location: { state: "Tamil Nadu", district: "Madurai", constituency: "Madurai East" },
     duration: 8,
     viewedBy: [],
@@ -92,8 +93,8 @@ export const MOCK_STORIES: Story[] = [
   },
   {
     id: "s4",
-    user: { id: "u5", name: "Arjun S", avatar: "https://randomuser.me/api/portraits/men/73.jpg", isVerified: false, isLeader: false },
-    media: { type: "image", url: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400", thumbnail: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=200" },
+    user: { id: "u5", name: "Arjun S", avatar: ARJUN_AVATAR, isVerified: false, isLeader: false },
+    media: { type: "image", url: TN_COVER_RALLY, thumbnail: TN_COVER_RALLY },
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North" },
     duration: 11,
     viewedBy: [],
@@ -102,8 +103,8 @@ export const MOCK_STORIES: Story[] = [
   },
   {
     id: "s5",
-    user: { id: "u6", name: "Deepa M", avatar: "https://randomuser.me/api/portraits/women/29.jpg", isVerified: false, isLeader: false },
-    media: { type: "image", url: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?w=400", thumbnail: "https://images.unsplash.com/photo-1593642634367-d91a135587b5?w=200" },
+    user: { id: "u6", name: "Deepa M", avatar: DEEPA_AVATAR, isVerified: false, isLeader: false },
+    media: { type: "image", url: TN_COVER_MAS, thumbnail: TN_COVER_MAS },
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Singanallur" },
     duration: 9,
     viewedBy: [],
@@ -150,7 +151,7 @@ export const MOCK_POSTS: Post[] = [
     author: {
       id: "u2",
       name: "Priya Raj",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+      avatar: PRIYA_AVATAR,
       isVerified: false,
       isLeader: false,
       role: "volunteer",
@@ -177,7 +178,7 @@ export const MOCK_POSTS: Post[] = [
     author: {
       id: "u_shankar",
       name: "Shankar Rajan",
-      avatar: "https://randomuser.me/api/portraits/men/62.jpg",
+      avatar: SHANKAR_AVATAR,
       isVerified: true,
       isLeader: true,
       role: "leader",
@@ -265,7 +266,7 @@ export const MOCK_POSTS: Post[] = [
     author: {
       id: "u4",
       name: "Lakshmi V",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+      avatar: LAKSHMI_AVATAR,
       isVerified: true,
       isLeader: false,
       role: "coordinator",
@@ -312,13 +313,13 @@ export const MOCK_POSTS: Post[] = [
     author: {
       id: "u3",
       name: "Murugan K",
-      avatar: "https://randomuser.me/api/portraits/men/56.jpg",
+      avatar: MURUGAN_AVATAR,
       isVerified: false,
       isLeader: false,
       role: "supporter",
     },
     content: "Attended the We The Leaders youth connect session at Coimbatore today. 300 young people from across the district. The energy was incredible! Annamalai sir's words: 'If you build the muscle and the fibre, it becomes a political party.' 🔥 #WeTheLeaders",
-    media: [{ type: "image", url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800", aspectRatio: 1.5 }],
+    media: [{ type: "image", url: TN_COVER_YOUTH, aspectRatio: 1.5 }],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore South", label: "Coimbatore" },
     hashtags: ["WeTheLeaders", "CoimbatoreYouth", "GoodPolitics"],
     mentions: ["@annamalai_k"],
@@ -383,12 +384,12 @@ export const MOCK_REELS: Reel[] = [
     author: {
       id: "u2",
       name: "Priya Raj",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+      avatar: PRIYA_AVATAR,
       isVerified: false,
       role: "volunteer",
     },
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    thumbnailUrl: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600",
+    thumbnailUrl: TN_COVER_CLEAN,
     caption: "Our Coimbatore North cleanup drive behind the scenes — 60 volunteers, one mission. This is what We The Leaders looks like at the ground level 💪 #CleanCoimbatore",
     hashtags: ["CleanCoimbatore", "GroundLevel", "Volunteers"],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North", label: "RS Puram, Coimbatore" },
@@ -403,12 +404,12 @@ export const MOCK_REELS: Reel[] = [
     author: {
       id: "u3",
       name: "Murugan K",
-      avatar: "https://randomuser.me/api/portraits/men/56.jpg",
+      avatar: MURUGAN_AVATAR,
       isVerified: false,
       role: "supporter",
     },
     videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    thumbnailUrl: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=600",
+    thumbnailUrl: TN_COVER_YOUTH,
     caption: "My first public speech at the We The Leaders youth rally. Nervous but proud. A 22-year-old engineer from Coimbatore speaking at a state-level event. If I can, so can YOU! 🙏 #FirstSpeech",
     hashtags: ["Youth", "FirstSpeech", "Coimbatore"],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore South", label: "Coimbatore" },
@@ -447,11 +448,11 @@ export const MOCK_EVENTS: Event[] = [
     title: "We The Leaders — Coimbatore North Booth Meeting",
     description: "Monthly coordination meeting for all Coimbatore North booth workers. Agenda: June target review, July planning, volunteer recognitions. Attend in person or via live stream.",
     category: "meeting",
-    coverImage: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600",
+    coverImage: TN_COVER_CBE,
     organizer: {
       id: "u_shankar",
       name: "Shankar Rajan",
-      avatar: "https://randomuser.me/api/portraits/men/62.jpg",
+      avatar: SHANKAR_AVATAR,
       isVerified: true,
     },
     location: {
@@ -473,11 +474,11 @@ export const MOCK_EVENTS: Event[] = [
     title: "Mega Cleanup Drive – RS Puram & Gandhipuram",
     description: "Join 200+ volunteers for the largest single-day cleanup drive in Coimbatore North. Equipment provided. Breakfast and lunch arranged for all volunteers.",
     category: "cleanup",
-    coverImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600",
+    coverImage: TN_COVER_CLEAN,
     organizer: {
       id: "u2",
       name: "Priya Raj",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+      avatar: PRIYA_AVATAR,
       isVerified: false,
     },
     location: {
@@ -498,7 +499,7 @@ export const MOCK_EVENTS: Event[] = [
     title: "We The Leaders Youth Leadership Bootcamp — Coimbatore",
     description: "Intensive 2-day leadership bootcamp for young people aged 18-28. Topics: public speaking, community organizing, digital activism, booth management, data strategy. Inspired by Annamalai's vision.",
     category: "training",
-    coverImage: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600",
+    coverImage: TN_COVER_YOUTH,
     organizer: {
       id: "u_annamalai",
       name: "K. Annamalai",
@@ -525,7 +526,7 @@ export const MOCK_EVENTS: Event[] = [
     title: "We The Leaders — Tamil Nadu State Convention, Chennai",
     description: "Annual state convention with 10,000+ members from all 234 constituencies. Address by K. Annamalai. Awards for top volunteers and constituencies. Live stream for all members.",
     category: "rally",
-    coverImage: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600",
+    coverImage: TN_COVER_RALLY,
     organizer: {
       id: "u_annamalai",
       name: "K. Annamalai",
@@ -551,11 +552,11 @@ export const MOCK_EVENTS: Event[] = [
     title: "Voter Awareness Drive — Booth Level Registration",
     description: "Booth-level voter registration and awareness campaign. Help unregistered voters complete their voter registration, update addresses, and understand their civic rights.",
     category: "campaign",
-    coverImage: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=600",
+    coverImage: TN_COVER_STATE,
     organizer: {
       id: "u4",
       name: "Lakshmi V",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+      avatar: LAKSHMI_AVATAR,
       isVerified: true,
     },
     location: {
@@ -580,7 +581,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     id: "c1",
     name: "Coimbatore North — We The Leaders",
     description: "Official community for We The Leaders members in Coimbatore North constituency. Local events, issues, campaigns, and volunteer coordination.",
-    coverImage: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600",
+    coverImage: TN_COVER_CBE,
     icon: "🏙️",
     level: "constituency",
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North" },
@@ -598,7 +599,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     id: "c2",
     name: "Coimbatore District — We The Leaders",
     description: "District-level updates for all of Coimbatore's 11 constituencies. Major events, campaigns, and coordination hub for the district.",
-    coverImage: "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=600",
+    coverImage: TN_COVER_CBE,
     icon: "🌆",
     level: "district",
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "" },
@@ -615,7 +616,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     id: "c3",
     name: "Tamil Nadu — We The Leaders",
     description: "The official state-level community for all Tamil Nadu We The Leaders members. State announcements, campaigns, and movement-wide updates.",
-    coverImage: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=600",
+    coverImage: TN_COVER_STATE,
     icon: "🏛️",
     level: "state",
     location: { state: "Tamil Nadu", district: "", constituency: "" },
@@ -632,7 +633,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     id: "c4",
     name: "Coimbatore Youth — We The Leaders",
     description: "A community for young members under 30 in Coimbatore district. Peer learning, joint events, and youth-led initiatives.",
-    coverImage: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600",
+    coverImage: TN_COVER_YOUTH,
     icon: "⚡",
     level: "district",
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "" },
@@ -688,7 +689,7 @@ export const MOCK_LEADERS: Leader[] = [
       id: "u_shankar",
       name: "Shankar Rajan",
       handle: "shankar_cbenorth",
-      avatar: "https://randomuser.me/api/portraits/men/62.jpg",
+      avatar: SHANKAR_AVATAR,
       bio: "Constituency Coordinator, Coimbatore North — We The Leaders | 15 years of community service",
       role: "leader",
       volunteerLevel: 4,
@@ -716,7 +717,7 @@ export const MOCK_LEADERS: Leader[] = [
       id: "u_vimala",
       name: "Vimala Devi",
       handle: "vimala_cbedistrict",
-      avatar: "https://randomuser.me/api/portraits/women/55.jpg",
+      avatar: VIMALA_AVATAR,
       bio: "District Women's Coordinator, Coimbatore — We The Leaders | Empowering women in Tamil politics",
       role: "leader",
       volunteerLevel: 4,
@@ -766,7 +767,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
     type: "like",
     title: "Priya Raj and 47 others liked your post",
     body: "Your post about the RS Puram cleanup is getting attention!",
-    actor: { id: "u2", name: "Priya Raj", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+    actor: { id: "u2", name: "Priya Raj", avatar: PRIYA_AVATAR },
     relatedId: "p1",
     relatedType: "post",
     isRead: false,
@@ -805,7 +806,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
     type: "follow",
     title: "Shankar Rajan started following you",
     body: "Your constituency coordinator is now following you.",
-    actor: { id: "u_shankar", name: "Shankar Rajan", avatar: "https://randomuser.me/api/portraits/men/62.jpg" },
+    actor: { id: "u_shankar", name: "Shankar Rajan", avatar: SHANKAR_AVATAR },
     isRead: true,
     createdAt: "2026-06-08T10:00:00Z",
   },
@@ -877,7 +878,7 @@ export const MOCK_ISSUES: LocalIssue[] = [
     description: "Dangerous pothole has caused 2 accidents in 3 weeks. Municipal office contacted but no response. Needs immediate repair.",
     category: "road",
     images: ["https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=600"],
-    reportedBy: { id: "u4", name: "Lakshmi V", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+    reportedBy: { id: "u4", name: "Lakshmi V", avatar: LAKSHMI_AVATAR },
     location: {
       state: "Tamil Nadu",
       district: "Coimbatore",
@@ -895,7 +896,7 @@ export const MOCK_ISSUES: LocalIssue[] = [
     title: "Street lights not working for 2 months — Sarojini Street",
     description: "Entire stretch of Sarojini Street has no working street lights. Safety concern for women and elderly residents.",
     category: "electricity",
-    reportedBy: { id: "u5", name: "Arjun S", avatar: "https://randomuser.me/api/portraits/men/73.jpg" },
+    reportedBy: { id: "u5", name: "Arjun S", avatar: ARJUN_AVATAR },
     location: {
       state: "Tamil Nadu",
       district: "Coimbatore",

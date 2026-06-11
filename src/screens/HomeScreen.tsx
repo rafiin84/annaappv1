@@ -7,7 +7,9 @@ import {
   Text,
   RefreshControl,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  PlusCircleIcon, Bars3Icon, CalendarDaysIcon, MegaphoneIcon,
+} from "react-native-heroicons/outline";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/contexts/ThemeContext";
@@ -95,7 +97,7 @@ export default function HomeScreen() {
         return (
           <View style={styles.eventInline}>
             <View style={styles.eventInlineLabel}>
-              <Ionicons name="calendar" size={12} color={theme.primary} />
+              <CalendarDaysIcon size={12} color={theme.primary} />
               <Text style={[styles.eventInlineLabelText, { color: theme.primary }]}>Event near you</Text>
             </View>
             <EventCard event={item.data} compact />
@@ -124,7 +126,7 @@ export default function HomeScreen() {
         ]}
       >
         <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
-          <Ionicons name="add-circle-outline" size={26} color={theme.primary} />
+          <PlusCircleIcon size={26} color={theme.primary} />
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
@@ -137,7 +139,7 @@ export default function HomeScreen() {
         </View>
 
         <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
-          <Ionicons name="menu-outline" size={26} color={theme.textPrimary} />
+          <Bars3Icon size={26} color={theme.textPrimary} />
         </TouchableOpacity>
       </View>
 
@@ -174,7 +176,7 @@ function LeaderCTA({ theme }: { theme: any }) {
   return (
     <View style={[styles.leaderCTA, { backgroundColor: theme.primary + "12", borderColor: theme.primary + "30" }]}>
       <View style={styles.leaderCTAIcon}>
-        <Ionicons name="megaphone" size={24} color={theme.primary} />
+        <MegaphoneIcon size={24} color={theme.primary} />
       </View>
       <View style={styles.leaderCTAContent}>
         <Text style={[styles.leaderCTATitle, { color: theme.textPrimary }]}>Follow your leaders</Text>

@@ -10,7 +10,29 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  Cog6ToothIcon, ShareIcon, MapPinIcon, CalendarDaysIcon,
+  ExclamationTriangleIcon, UsersIcon, LockClosedIcon,
+  ArrowRightOnRectangleIcon, StarIcon as StarOutlineIcon,
+} from "react-native-heroicons/outline";
+import {
+  SunIcon, MoonIcon, StarIcon,
+  CalendarDaysIcon as CalendarDaysIconSolid,
+  UsersIcon as UsersIconSolid,
+} from "react-native-heroicons/solid";
+
+const IMPACT_ICON_MAP: Record<string, React.ComponentType<any>> = {
+  "calendar-outline":  CalendarDaysIcon,
+  "warning-outline":   ExclamationTriangleIcon,
+  "people-outline":    UsersIcon,
+  "star-outline":      StarOutlineIcon,
+};
+
+const BADGE_ICON_MAP: Record<string, React.ComponentType<any>> = {
+  "star":     StarIcon,
+  "calendar": CalendarDaysIconSolid,
+  "people":   UsersIconSolid,
+};
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -64,13 +86,13 @@ export default function ProfileScreen() {
             style={[styles.coverBtn, { backgroundColor: "rgba(0,0,0,0.4)" }]}
             onPress={() => setShowLogout(true)}
           >
-            <Ionicons name="settings-outline" size={20} color="#fff" />
+            <Cog6ToothIcon size={20} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={toggleTheme}
             style={[styles.coverBtn, { backgroundColor: "rgba(0,0,0,0.4)" }]}
           >
-            <Ionicons name={isDark ? "sunny" : "moon"} size={20} color="#fff" />
+            {isDark ? <SunIcon size={20} color="#fff" /> : <MoonIcon size={20} color="#fff" />}
           </TouchableOpacity>
         </View>
       </View>
@@ -89,7 +111,7 @@ export default function ProfileScreen() {
               <Text style={[styles.editBtnText, { color: theme.textPrimary }]}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.shareBtn, { borderColor: theme.border, borderWidth: 1.5 }]}>
-              <Ionicons name="share-outline" size={18} color={theme.textPrimary} />
+              <ShareIcon size={18} color={theme.textPrimary} />
             </TouchableOpacity>
           </View>
         </View>
@@ -104,7 +126,7 @@ export default function ProfileScreen() {
         {/* Level bar */}
         <View style={[styles.levelRow, { backgroundColor: levelInfo.color + "15", borderColor: levelInfo.color + "30" }]}>
           <View style={[styles.levelIcon, { backgroundColor: levelInfo.color }]}>
-            <Ionicons name="star" size={14} color="#fff" />
+            <StarIcon size={14} color="#fff" />
           </View>
           <View style={styles.levelContent}>
             <View style={styles.levelTextRow}>
@@ -132,7 +154,7 @@ export default function ProfileScreen() {
 
         {/* Location */}
         <TouchableOpacity style={styles.locationRow}>
-          <Ionicons name="location-outline" size={14} color={theme.primary} />
+          <MapPinIcon size={14} color={theme.primary} />
           <Text style={[styles.locationText, { color: theme.textSecondary }]}>
             {user.location.constituency}, {user.location.district}
           </Text>
@@ -172,7 +194,7 @@ export default function ProfileScreen() {
               <View style={styles.impactRow}>
                 {items.slice(0, 2).map((item) => (
                   <View key={item.label} style={[styles.impactItem, { backgroundColor: item.color + "12" }]}>
-                    <Ionicons name={item.icon as any} size={22} color={item.color} />
+                    {(() => { const IC = IMPACT_ICON_MAP[item.icon]; return IC ? <IC size={22} color={item.color} /> : null; })()}
                     <Text style={[styles.impactValue, { color: item.color }]}>{formatCount(item.value)}</Text>
                     <Text style={[styles.impactLabel, { color: theme.textTertiary }]}>{item.label}</Text>
                   </View>
@@ -181,7 +203,7 @@ export default function ProfileScreen() {
               <View style={styles.impactRow}>
                 {items.slice(2, 4).map((item) => (
                   <View key={item.label} style={[styles.impactItem, { backgroundColor: item.color + "12" }]}>
-                    <Ionicons name={item.icon as any} size={22} color={item.color} />
+                    {(() => { const IC = IMPACT_ICON_MAP[item.icon]; return IC ? <IC size={22} color={item.color} /> : null; })()}
                     <Text style={[styles.impactValue, { color: item.color }]}>{formatCount(item.value)}</Text>
                     <Text style={[styles.impactLabel, { color: theme.textTertiary }]}>{item.label}</Text>
                   </View>
@@ -204,7 +226,7 @@ export default function ProfileScreen() {
           {user.badges.map((badge) => (
             <View key={badge.id} style={[styles.badgeItem, { backgroundColor: badge.color + "15" }]}>
               <View style={[styles.badgeIconBg, { backgroundColor: badge.color + "25" }]}>
-                <Ionicons name={badge.icon as any} size={22} color={badge.color} />
+                {(() => { const IC = BADGE_ICON_MAP[badge.icon]; return IC ? <IC size={22} color={badge.color} /> : null; })()}
               </View>
               <Text style={[styles.badgeTitle, { color: theme.textPrimary }]}>{badge.title}</Text>
             </View>
@@ -212,7 +234,7 @@ export default function ProfileScreen() {
           {/* Locked badge */}
           <View style={[styles.badgeItem, { backgroundColor: theme.surfaceSecondary }]}>
             <View style={[styles.badgeIconBg, { backgroundColor: theme.border }]}>
-              <Ionicons name="lock-closed" size={22} color={theme.textTertiary} />
+              <LockClosedIcon size={22} color={theme.textTertiary} />
             </View>
             <Text style={[styles.badgeTitle, { color: theme.textTertiary }]}>Mega Volunteer</Text>
           </View>
@@ -337,7 +359,7 @@ export default function ProfileScreen() {
         onPress={() => setShowLogout(true)}
         activeOpacity={0.7}
       >
-        <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+        <ArrowRightOnRectangleIcon size={20} color="#EF4444" />
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
 
@@ -348,7 +370,7 @@ export default function ProfileScreen() {
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowLogout(false)}>
         <View style={[styles.modalCard, { backgroundColor: theme.surface }]}>
           <View style={styles.modalIconWrap}>
-            <Ionicons name="log-out-outline" size={32} color="#EF4444" />
+            <ArrowRightOnRectangleIcon size={32} color="#EF4444" />
           </View>
           <Text style={[styles.modalTitle, { color: theme.textPrimary }]}>Sign Out</Text>
           <Text style={[styles.modalSub, { color: theme.textSecondary }]}>

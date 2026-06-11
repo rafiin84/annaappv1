@@ -1,5 +1,7 @@
 {
+  "buildCommand": "",
   "outputDirectory": "dist",
+  "installCommand": "echo skip",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]

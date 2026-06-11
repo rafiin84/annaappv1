@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,48 +17,46 @@ import { useAuth } from "@/contexts/AuthContext";
 const ANNAMALAI_PHOTO =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/250px-K._Annamalai_at_padayatra.jpg";
 
-// Simple Zoho Z logo in SVG-free form
-function ZohoLogo() {
-  return (
-    <View style={styles.zohoLogo}>
-      <Text style={styles.zohoLogoText}>Z</Text>
-    </View>
-  );
-}
+type Step = "phone" | "otp";
 
 export default function LoginScreen() {
   const insets = useSafeAreaInsets();
-  const { loginDemo, loginWithZoho, isLoading, authError } = useAuth();
+  const { loginWithPhone } = useAuth();
 
+  const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [localLoading, setLocalLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const otpRef = useRef<TextInput>(null);
 
-  const handleDemoLogin = async () => {
+  const handleSendOtp = () => {
     setError("");
     if (phone.trim().length < 10) {
       setError("Enter a valid 10-digit mobile number");
       return;
     }
-    if (password.trim().length < 4) {
-      setError("Password must be at least 4 characters");
+    setStep("otp");
+    setTimeout(() => otpRef.current?.focus(), 300);
+  };
+
+  const handleVerifyOtp = async () => {
+    setError("");
+    if (otp.trim().length < 6) {
+      setError("Enter the 6-digit OTP");
       return;
     }
-    setLocalLoading(true);
-    const ok = await loginDemo(phone, password);
-    setLocalLoading(false);
-    if (!ok) setError("Invalid credentials. Please try again.");
+    setLoading(true);
+    const ok = await loginWithPhone(phone);
+    setLoading(false);
+    if (!ok) setError("Verification failed. Please try again.");
   };
 
-  const handleZohoLogin = async () => {
+  const handleBack = () => {
+    setStep("phone");
+    setOtp("");
     setError("");
-    await loginWithZoho();
   };
-
-  const busy = localLoading || isLoading;
-  const displayError = error || authError;
 
   return (
     <KeyboardAvoidingView
@@ -81,101 +79,99 @@ export default function LoginScreen() {
 
         {/* Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Welcome Back</Text>
-          <Text style={styles.cardSub}>Sign in to continue</Text>
+          {step === "phone" ? (
+            <>
+              <Text style={styles.cardTitle}>Welcome</Text>
+              <Text style={styles.cardSub}>Enter your mobile number to continue</Text>
 
-          {/* Zoho Login — primary */}
-          <TouchableOpacity
-            style={[styles.zohoBtn, busy && styles.btnDisabled]}
-            onPress={handleZohoLogin}
-            activeOpacity={0.85}
-            disabled={busy}
-          >
-            {busy && !localLoading ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
-              <>
-                <ZohoLogo />
-                <Text style={styles.zohoBtnText}>Continue with Zoho</Text>
-              </>
-            )}
-          </TouchableOpacity>
+              <View style={styles.fieldWrap}>
+                <Text style={styles.label}>Mobile Number</Text>
+                <View style={styles.inputRow}>
+                  <Text style={styles.prefix}>+91</Text>
+                  <View style={styles.dividerV} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="10-digit mobile number"
+                    placeholderTextColor="#9CA3AF"
+                    keyboardType="phone-pad"
+                    maxLength={10}
+                    value={phone}
+                    onChangeText={(t) => { setPhone(t); setError(""); }}
+                    returnKeyType="done"
+                    onSubmitEditing={handleSendOtp}
+                    autoFocus
+                  />
+                </View>
+              </View>
 
-          {/* Divider */}
-          <View style={styles.orRow}>
-            <View style={styles.orLine} />
-            <Text style={styles.orText}>OR</Text>
-            <View style={styles.orLine} />
-          </View>
+              {!!error && <Text style={styles.errorText}>{error}</Text>}
 
-          {/* Phone */}
-          <View style={styles.fieldWrap}>
-            <Text style={styles.label}>Mobile Number</Text>
-            <View style={styles.inputRow}>
-              <Text style={styles.prefix}>+91</Text>
-              <View style={styles.dividerV} />
-              <TextInput
-                style={styles.input}
-                placeholder="10-digit mobile number"
-                placeholderTextColor="#9CA3AF"
-                keyboardType="phone-pad"
-                maxLength={10}
-                value={phone}
-                onChangeText={(t) => { setPhone(t); setError(""); }}
-              />
-            </View>
-          </View>
-
-          {/* Password */}
-          <View style={styles.fieldWrap}>
-            <Text style={styles.label}>Password</Text>
-            <View style={styles.inputRow}>
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                placeholder="Enter your password"
-                placeholderTextColor="#9CA3AF"
-                secureTextEntry={!showPassword}
-                value={password}
-                onChangeText={(t) => { setPassword(t); setError(""); }}
-              />
-              <TouchableOpacity onPress={() => setShowPassword((v) => !v)} style={styles.eyeBtn}>
-                <Text style={styles.eyeText}>{showPassword ? "Hide" : "Show"}</Text>
+              <TouchableOpacity
+                style={[styles.primaryBtn, phone.length < 10 && styles.btnDim]}
+                onPress={handleSendOtp}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.primaryBtnText}>Send OTP</Text>
               </TouchableOpacity>
-            </View>
-          </View>
 
-          {/* Error */}
-          {!!displayError && <Text style={styles.errorText}>{displayError}</Text>}
+              <Text style={styles.disclaimer}>
+                OTP will be sent to your registered mobile number
+              </Text>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity onPress={handleBack} style={styles.backRow}>
+                <Text style={styles.backArrow}>←</Text>
+                <Text style={styles.backText}>+91 {phone}</Text>
+              </TouchableOpacity>
 
-          {/* Forgot */}
-          <TouchableOpacity style={styles.forgotRow}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
+              <Text style={styles.cardTitle}>Verify OTP</Text>
+              <Text style={styles.cardSub}>
+                Enter the 6-digit code sent to{"\n"}+91 {phone}
+              </Text>
 
-          {/* Sign In button */}
-          <TouchableOpacity
-            style={[styles.loginBtn, busy && styles.btnDisabled]}
-            onPress={handleDemoLogin}
-            activeOpacity={0.85}
-            disabled={busy}
-          >
-            {localLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.loginBtnText}>Sign In</Text>
-            )}
-          </TouchableOpacity>
+              <View style={styles.fieldWrap}>
+                <Text style={styles.label}>One-Time Password</Text>
+                <View style={styles.inputRow}>
+                  <TextInput
+                    ref={otpRef}
+                    style={[styles.input, styles.otpInput]}
+                    placeholder="• • • • • •"
+                    placeholderTextColor="#9CA3AF"
+                    keyboardType="number-pad"
+                    maxLength={6}
+                    value={otp}
+                    onChangeText={(t) => { setOtp(t); setError(""); }}
+                    returnKeyType="done"
+                    onSubmitEditing={handleVerifyOtp}
+                  />
+                </View>
+              </View>
+
+              {!!error && <Text style={styles.errorText}>{error}</Text>}
+
+              <TouchableOpacity
+                style={[styles.primaryBtn, (otp.length < 6 || loading) && styles.btnDim]}
+                onPress={handleVerifyOtp}
+                activeOpacity={0.85}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.primaryBtnText}>Verify & Continue</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={handleSendOtp} style={styles.resendRow}>
+                <Text style={styles.resendText}>Didn't receive OTP? </Text>
+                <Text style={styles.resendLink}>Resend</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
-        {/* Register */}
-        <View style={styles.registerRow}>
-          <Text style={styles.registerText}>New to Anna? </Text>
-          <TouchableOpacity>
-            <Text style={styles.registerLink}>Create Account</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ height: insets.bottom + 24 }} />
+        <View style={{ height: insets.bottom + 32 }} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -185,80 +181,147 @@ const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: "#2563EB" },
   scroll: { flexGrow: 1, backgroundColor: "#2563EB" },
 
-  hero: { alignItems: "center", paddingTop: 32, paddingBottom: 36 },
+  hero: { alignItems: "center", paddingTop: 36, paddingBottom: 40 },
   logoCircle: {
-    width: 96, height: 96, borderRadius: 48,
-    borderWidth: 3, borderColor: "#EAB308",
-    overflow: "hidden", backgroundColor: "#1e40af",
-    marginBottom: 16,
+    width: 104,
+    height: 104,
+    borderRadius: 52,
+    borderWidth: 3,
+    borderColor: "#EAB308",
+    overflow: "hidden",
+    backgroundColor: "#1e40af",
+    marginBottom: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   heroImage: { width: "100%", height: "100%" },
-  appName: { fontSize: 38, fontWeight: "800", color: "#FFFFFF", letterSpacing: 2 },
-  tagline: { fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 6, textAlign: "center", paddingHorizontal: 24 },
+  appName: {
+    fontSize: 40,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 2,
+  },
+  tagline: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+    marginTop: 6,
+    textAlign: "center",
+    paddingHorizontal: 24,
+  },
 
   card: {
     backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 28, borderTopRightRadius: 28,
-    paddingHorizontal: 24, paddingTop: 32, paddingBottom: 16,
-    flex: 1, minHeight: 480,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 24,
+    flex: 1,
+    minHeight: 420,
   },
-  cardTitle: { fontSize: 24, fontWeight: "700", color: "#111827", marginBottom: 4 },
-  cardSub: { fontSize: 14, color: "#6B7280", marginBottom: 24 },
 
-  // Zoho button
-  zohoBtn: {
-    flexDirection: "row", alignItems: "center", justifyContent: "center",
-    backgroundColor: "#E5272A",
-    borderRadius: 14, height: 54, gap: 10,
-    shadowColor: "#E5272A", shadowOpacity: 0.3, shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 }, elevation: 6,
+  backRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 20,
+  },
+  backArrow: { fontSize: 20, color: "#2563EB" },
+  backText: { fontSize: 14, color: "#2563EB", fontWeight: "600" },
+
+  cardTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 4,
   },
-  btnDisabled: { opacity: 0.65 },
-  zohoLogo: {
-    width: 28, height: 28, borderRadius: 6,
-    backgroundColor: "#fff", alignItems: "center", justifyContent: "center",
+  cardSub: {
+    fontSize: 14,
+    color: "#6B7280",
+    marginBottom: 28,
+    lineHeight: 20,
   },
-  zohoLogoText: { fontSize: 16, fontWeight: "900", color: "#E5272A" },
-  zohoBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 
-  // OR divider
-  orRow: { flexDirection: "row", alignItems: "center", marginVertical: 18 },
-  orLine: { flex: 1, height: 1, backgroundColor: "#E5E7EB" },
-  orText: { marginHorizontal: 12, fontSize: 12, color: "#9CA3AF", fontWeight: "600" },
-
-  // Fields
-  fieldWrap: { marginBottom: 16 },
-  label: { fontSize: 13, fontWeight: "600", color: "#374151", marginBottom: 6 },
+  fieldWrap: { marginBottom: 20 },
+  label: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 8,
+  },
   inputRow: {
-    flexDirection: "row", alignItems: "center",
-    borderWidth: 1.5, borderColor: "#E5E7EB",
-    borderRadius: 12, backgroundColor: "#F9FAFB",
-    paddingHorizontal: 14, height: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1.5,
+    borderColor: "#E5E7EB",
+    borderRadius: 14,
+    backgroundColor: "#F9FAFB",
+    paddingHorizontal: 16,
+    height: 56,
   },
-  prefix: { fontSize: 15, color: "#374151", fontWeight: "600" },
-  dividerV: { width: 1, height: 22, backgroundColor: "#E5E7EB", marginHorizontal: 10 },
+  prefix: {
+    fontSize: 15,
+    color: "#374151",
+    fontWeight: "600",
+  },
+  dividerV: {
+    width: 1,
+    height: 22,
+    backgroundColor: "#E5E7EB",
+    marginHorizontal: 12,
+  },
   input: { flex: 1, fontSize: 15, color: "#111827" },
-  eyeBtn: { paddingLeft: 8 },
-  eyeText: { fontSize: 13, color: "#2563EB", fontWeight: "600" },
-
-  errorText: { color: "#EF4444", fontSize: 13, marginBottom: 8, marginTop: -8 },
-
-  forgotRow: { alignItems: "flex-end", marginBottom: 24, marginTop: 4 },
-  forgotText: { fontSize: 13, color: "#2563EB", fontWeight: "600" },
-
-  loginBtn: {
-    backgroundColor: "#2563EB", borderRadius: 14, height: 54,
-    alignItems: "center", justifyContent: "center",
-    shadowColor: "#2563EB", shadowOpacity: 0.3, shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 }, elevation: 6,
+  otpInput: {
+    fontSize: 22,
+    fontWeight: "700",
+    letterSpacing: 8,
+    textAlign: "center",
   },
-  loginBtnText: { color: "#FFFFFF", fontSize: 16, fontWeight: "700", letterSpacing: 0.5 },
 
-  registerRow: {
-    flexDirection: "row", justifyContent: "center", alignItems: "center",
-    paddingVertical: 20, backgroundColor: "#FFFFFF",
+  errorText: {
+    color: "#EF4444",
+    fontSize: 13,
+    marginBottom: 12,
+    marginTop: -8,
   },
-  registerText: { fontSize: 14, color: "#6B7280" },
-  registerLink: { fontSize: 14, color: "#2563EB", fontWeight: "700" },
+
+  primaryBtn: {
+    backgroundColor: "#2563EB",
+    borderRadius: 14,
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#2563EB",
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
+  },
+  btnDim: { opacity: 0.55 },
+  primaryBtnText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+
+  disclaimer: {
+    fontSize: 12,
+    color: "#9CA3AF",
+    textAlign: "center",
+    marginTop: 14,
+    lineHeight: 17,
+  },
+
+  resendRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  resendText: { fontSize: 14, color: "#6B7280" },
+  resendLink: { fontSize: 14, color: "#2563EB", fontWeight: "700" },
 });

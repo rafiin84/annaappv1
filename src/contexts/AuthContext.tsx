@@ -15,6 +15,8 @@ interface AuthContextType {
   accessToken: string | null;
   loginWithZoho: () => void;
   loginDemo: (phone: string, password: string) => Promise<boolean>;
+  loginAsVolunteer: () => void;
+  loginWithPhone: (phone: string) => Promise<boolean>;
   logout: () => void;
   authError: string;
 }
@@ -26,6 +28,8 @@ const AuthContext = createContext<AuthContextType>({
   accessToken: null,
   loginWithZoho: () => {},
   loginDemo: async () => false,
+  loginAsVolunteer: () => {},
+  loginWithPhone: async () => false,
   logout: () => {},
   authError: "",
 });
@@ -90,6 +94,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   };
 
+  const loginAsVolunteer = () => {
+    setCrmUser({ id: "volunteer", full_name: "Tamil Volunteer", email: "volunteer@anna.in" });
+    setIsAuthenticated(true);
+  };
+
+  const loginWithPhone = async (phone: string): Promise<boolean> => {
+    if (phone.trim().length >= 10) {
+      setCrmUser({ id: "supporter_" + phone, full_name: "Supporter", email: phone + "@anna.in" });
+      setIsAuthenticated(true);
+      return true;
+    }
+    return false;
+  };
+
   const logout = async () => {
     await clearToken();
     setIsAuthenticated(false);
@@ -99,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, isLoading, crmUser, accessToken, loginWithZoho, loginDemo, logout, authError }}
+      value={{ isAuthenticated, isLoading, crmUser, accessToken, loginWithZoho, loginDemo, loginAsVolunteer, loginWithPhone, logout, authError }}
     >
       {children}
     </AuthContext.Provider>

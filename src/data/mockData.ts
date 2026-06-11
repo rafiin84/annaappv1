@@ -8,23 +8,23 @@ const ANNAMALAI_WIDE =
 const ANNAMALAI_MED =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/600px-K._Annamalai_at_padayatra.jpg";
 
-// ─── Tamil volunteer avatars — initial-based, no foreign faces ───────────────
-const PRIYA_AVATAR   = "https://ui-avatars.com/api/?name=Priya+Raj&background=DC2626&color=fff&size=128&bold=true";
-const MURUGAN_AVATAR = "https://ui-avatars.com/api/?name=Murugan+K&background=2563EB&color=fff&size=128&bold=true";
-const LAKSHMI_AVATAR = "https://ui-avatars.com/api/?name=Lakshmi+V&background=059669&color=fff&size=128&bold=true";
-const ARJUN_AVATAR   = "https://ui-avatars.com/api/?name=Arjun+S&background=D97706&color=fff&size=128&bold=true";
-const DEEPA_AVATAR   = "https://ui-avatars.com/api/?name=Deepa+M&background=7C3AED&color=fff&size=128&bold=true";
-const SHANKAR_AVATAR = "https://ui-avatars.com/api/?name=Shankar+Rajan&background=B45309&color=fff&size=128&bold=true";
-const VIMALA_AVATAR  = "https://ui-avatars.com/api/?name=Vimala+Devi&background=BE185D&color=fff&size=128&bold=true";
+// ─── Tamil volunteer avatars — portrait photos ────────────────────────────────
+const PRIYA_AVATAR   = "https://randomuser.me/api/portraits/women/65.jpg";
+const MURUGAN_AVATAR = "https://randomuser.me/api/portraits/men/67.jpg";
+const LAKSHMI_AVATAR = "https://randomuser.me/api/portraits/women/68.jpg";
+const ARJUN_AVATAR   = "https://randomuser.me/api/portraits/men/63.jpg";
+const DEEPA_AVATAR   = "https://randomuser.me/api/portraits/women/72.jpg";
+const SHANKAR_AVATAR = "https://randomuser.me/api/portraits/men/71.jpg";
+const VIMALA_AVATAR  = "https://randomuser.me/api/portraits/women/75.jpg";
 
-// ─── Tamil Nadu cover / scene images ─────────────────────────────────────────
-const TN_COVER_CBE   = "https://source.unsplash.com/800x450/?coimbatore,india";
-const TN_COVER_MAS   = "https://source.unsplash.com/800x450/?chennai,india";
-const TN_COVER_MDU   = "https://source.unsplash.com/800x450/?madurai,temple,india";
-const TN_COVER_STATE = "https://source.unsplash.com/800x450/?tamilnadu,india";
-const TN_COVER_YOUTH = "https://source.unsplash.com/800x450/?youth,india,meeting";
+// ─── Tamil Nadu cover / scene images (direct CDN — source.unsplash.com retired) ──
+const TN_COVER_CBE   = "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80";
+const TN_COVER_MAS   = "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&q=80";
+const TN_COVER_MDU   = "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=800&q=80";
+const TN_COVER_STATE = "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80";
+const TN_COVER_YOUTH = "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80";
 const TN_COVER_RALLY = ANNAMALAI_MED;
-const TN_COVER_CLEAN = "https://source.unsplash.com/800x450/?cleanup,volunteers,india";
+const TN_COVER_CLEAN = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80";
 
 // ─── Logged-in volunteer user ─────────────────────────────────────────────────
 export const CURRENT_USER: User = {
@@ -158,8 +158,8 @@ export const MOCK_POSTS: Post[] = [
     },
     content: "Our Coimbatore North constituency volunteers cleaned the entire RS Puram market area today. 60+ volunteers, 3 hours, 2 tonnes of waste removed! This is what community action looks like 💪 #CoimbatoreProud",
     media: [
-      { type: "image", url: "https://source.unsplash.com/800x600/?india,cleanup,volunteers", aspectRatio: 1.33 },
-      { type: "image", url: "https://source.unsplash.com/800x600/?india,community,service", aspectRatio: 1.33 },
+      { type: "image", url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&q=80", aspectRatio: 1.33 },
+      { type: "image", url: "https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=800&q=80", aspectRatio: 1.33 },
     ],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North", label: "RS Puram, Coimbatore North" },
     hashtags: ["CoimbatoreNorth", "CleanCBE", "WeTheLeaders"],
@@ -272,7 +272,7 @@ export const MOCK_POSTS: Post[] = [
       role: "coordinator",
     },
     content: "⚠️ Issue Reported: The main road at Gandhipuram junction has had a pothole for 3 weeks now. Two accidents have already happened. I've submitted this to the municipal office. Let's get 500 upvotes so it gets escalated immediately.\n\nTag your local ward representatives! 📍 Gandhipuram, Coimbatore North",
-    media: [{ type: "image", url: "https://source.unsplash.com/800x600/?india,road,street,pothole", aspectRatio: 1.33 }],
+    media: [{ type: "image", url: "https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=800&q=80", aspectRatio: 1.33 }],
     location: { state: "Tamil Nadu", district: "Coimbatore", constituency: "Coimbatore North", label: "Gandhipuram Junction" },
     hashtags: ["LocalIssue", "CoimbatoreNorth", "FixOurRoads"],
     mentions: ["@cbe_municipal"],
@@ -877,7 +877,7 @@ export const MOCK_ISSUES: LocalIssue[] = [
     title: "Large pothole at Gandhipuram Junction",
     description: "Dangerous pothole has caused 2 accidents in 3 weeks. Municipal office contacted but no response. Needs immediate repair.",
     category: "road",
-    images: ["https://source.unsplash.com/800x600/?india,road,street,pothole"],
+    images: ["https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=800&q=80"],
     reportedBy: { id: "u4", name: "Lakshmi V", avatar: LAKSHMI_AVATAR },
     location: {
       state: "Tamil Nadu",

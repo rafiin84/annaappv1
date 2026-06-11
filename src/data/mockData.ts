@@ -8,14 +8,14 @@ const ANNAMALAI_WIDE =
 const ANNAMALAI_MED =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/600px-K._Annamalai_at_padayatra.jpg";
 
-// ─── Tamil volunteer avatars — portrait photos ────────────────────────────────
-const PRIYA_AVATAR   = "https://randomuser.me/api/portraits/women/65.jpg";
-const MURUGAN_AVATAR = "https://randomuser.me/api/portraits/men/67.jpg";
-const LAKSHMI_AVATAR = "https://randomuser.me/api/portraits/women/68.jpg";
-const ARJUN_AVATAR   = "https://randomuser.me/api/portraits/men/63.jpg";
-const DEEPA_AVATAR   = "https://randomuser.me/api/portraits/women/72.jpg";
-const SHANKAR_AVATAR = "https://randomuser.me/api/portraits/men/71.jpg";
-const VIMALA_AVATAR  = "https://randomuser.me/api/portraits/women/75.jpg";
+// ─── Tamil volunteer avatars — Indian nationality portraits from randomuser.me ─
+const PRIYA_AVATAR   = "https://randomuser.me/api/portraits/women/12.jpg";
+const MURUGAN_AVATAR = "https://randomuser.me/api/portraits/men/45.jpg";
+const LAKSHMI_AVATAR = "https://randomuser.me/api/portraits/women/52.jpg";
+const ARJUN_AVATAR   = "https://randomuser.me/api/portraits/men/83.jpg";
+const DEEPA_AVATAR   = "https://randomuser.me/api/portraits/women/34.jpg";
+const SHANKAR_AVATAR = "https://randomuser.me/api/portraits/men/87.jpg";
+const VIMALA_AVATAR  = "https://randomuser.me/api/portraits/women/81.jpg";
 
 // ─── Tamil Nadu cover / scene images (direct CDN — source.unsplash.com retired) ──
 const TN_COVER_CBE   = "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80";

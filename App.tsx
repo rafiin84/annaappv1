@@ -4,7 +4,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { useFonts } from "expo-font";
-import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5, Feather } from "@expo/vector-icons";
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocationProvider } from "@/contexts/LocationContext";
@@ -20,6 +20,7 @@ export default function App() {
     ...Ionicons.font,
     ...MaterialIcons.font,
     ...FontAwesome5.font,
+    ...Feather.font,
   });
 
   if (!fontsLoaded) {

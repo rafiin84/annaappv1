@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import HomeScreen from "@/screens/HomeScreen";
@@ -17,23 +17,21 @@ import { MainTabParamList } from "@/types";
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-const YELLOW = "#EAB308";
-const BLUE   = "#2563EB";
+const BLUE = "#2563EB";
 
-type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
+type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
 interface TabConfig {
   name: keyof MainTabParamList;
-  icon: IoniconName;
-  iconFocused: IoniconName;
+  icon: FeatherName;
 }
 
 const TABS: TabConfig[] = [
-  { name: "Home",      icon: "home-outline",          iconFocused: "home" },
-  { name: "Reels",     icon: "play-circle-outline",   iconFocused: "play-circle" },
-  { name: "Discover",  icon: "search-outline",        iconFocused: "search" },
-  { name: "Community", icon: "location-outline",      iconFocused: "location" },
-  { name: "Profile",   icon: "person-circle-outline", iconFocused: "person-circle" },
+  { name: "Home",      icon: "home"      },
+  { name: "Reels",     icon: "play"      },
+  { name: "Discover",  icon: "compass"   },
+  { name: "Community", icon: "map-pin"   },
+  { name: "Profile",   icon: "user"      },
 ];
 
 const UNREAD = MOCK_NOTIFICATIONS.filter((n) => !n.isRead).length;
@@ -43,27 +41,20 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const { scrolledDown } = useScroll();
   const insets = useSafeAreaInsets();
 
-  const pillH  = useRef(new Animated.Value(60)).current;
+  const pillH  = useRef(new Animated.Value(62)).current;
   const iconSc = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.spring(pillH,  { toValue: scrolledDown ? 48 : 60, useNativeDriver: false, tension: 120, friction: 10 }),
-      Animated.spring(iconSc, { toValue: scrolledDown ? 0.82 : 1, useNativeDriver: true,  tension: 120, friction: 10 }),
+      Animated.spring(pillH,  { toValue: scrolledDown ? 50 : 62, useNativeDriver: false, tension: 120, friction: 10 }),
+      Animated.spring(iconSc, { toValue: scrolledDown ? 0.85 : 1, useNativeDriver: true,  tension: 120, friction: 10 }),
     ]).start();
   }, [scrolledDown]);
 
-  const bg = isDark ? "rgba(18,18,24,0.97)" : "rgba(255,255,255,0.97)";
+  const bg = isDark ? "rgba(18,18,24,0.98)" : "rgba(255,255,255,0.98)";
 
   return (
-    /* Outer container: provides bottom spacing + horizontal margin */
-    <View
-      style={[
-        styles.wrapper,
-        { paddingBottom: Math.max(insets.bottom, 8) + 4 },
-      ]}
-    >
-      {/* The pill itself — normal flow, not absolute */}
+    <View style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 8) + 4 }]}>
       <Animated.View
         style={[
           styles.pill,
@@ -71,9 +62,9 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
             height: pillH,
             backgroundColor: bg,
             shadowColor: "#000",
-            shadowOpacity: isDark ? 0.45 : 0.14,
-            shadowRadius: 20,
-            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: isDark ? 0.4 : 0.10,
+            shadowRadius: 24,
+            shadowOffset: { width: 0, height: 8 },
             elevation: 20,
           },
         ]}
@@ -81,7 +72,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
           const tab = TABS.find((t) => t.name === route.name)!;
-          const iconColor = isFocused ? BLUE : (isDark ? "#888" : "#9CA3AF");
+          const iconColor = isFocused ? BLUE : (isDark ? "#6B7280" : "#9CA3AF");
 
           const onPress = () => {
             const ev = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
@@ -92,20 +83,22 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
             <TouchableOpacity
               key={route.name}
               onPress={onPress}
-              activeOpacity={0.7}
+              activeOpacity={0.75}
               style={styles.item}
             >
-              {/* Yellow highlight capsule behind active icon */}
-              {isFocused && <View style={styles.activePill} />}
-
-              <Animated.View style={{ transform: [{ scale: iconSc }], zIndex: 1 }}>
-                <Ionicons
-                  name={isFocused ? tab.iconFocused : tab.icon}
-                  size={24}
+              <Animated.View style={{ transform: [{ scale: iconSc }] }}>
+                <Feather
+                  name={tab.icon}
+                  size={isFocused ? 23 : 22}
                   color={iconColor}
+                  strokeWidth={isFocused ? 2.5 : 1.8}
                 />
               </Animated.View>
 
+              {/* Blue dot under active icon */}
+              {isFocused && <View style={styles.activeDot} />}
+
+              {/* Notification badge on Home */}
               {route.name === "Home" && UNREAD > 0 && (
                 <View style={styles.badge}>
                   <Text style={styles.badgeText}>{UNREAD > 9 ? "9+" : UNREAD}</Text>
@@ -142,51 +135,48 @@ export default function BottomTabNavigator() {
 }
 
 const styles = StyleSheet.create({
-  /* Outer wrapper — margin + bottom safe area */
   wrapper: {
     paddingHorizontal: 20,
     paddingTop: 6,
     backgroundColor: "transparent",
   },
-  /* The rounded pill */
   pill: {
     borderRadius: 40,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
     overflow: "visible",
   },
-  /* Each tab item */
   item: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 6,
+    paddingVertical: 8,
+    gap: 4,
     position: "relative",
   },
-  /* Yellow semi-transparent capsule behind active icon */
-  activePill: {
-    position: "absolute",
-    width: 44,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: YELLOW + "30",
+  /* Small blue dot below active icon */
+  activeDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: BLUE,
   },
-  /* Notification dot */
+  /* Notification badge */
   badge: {
     position: "absolute",
-    top: 2,
-    right: "10%" as any,
-    minWidth: 16,
-    height: 16,
+    top: 4,
+    right: "12%" as any,
+    minWidth: 15,
+    height: 15,
     borderRadius: 8,
-    backgroundColor: YELLOW,
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 3,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: "#fff",
   },
-  badgeText: { color: "#fff", fontSize: 9, fontWeight: "800" },
+  badgeText: { color: "#fff", fontSize: 8, fontWeight: "800" },
 });

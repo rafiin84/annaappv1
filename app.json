@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#2563EB"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.nammakatchchi.app",
@@ -24,7 +26,12 @@
       },
       "package": "com.nammakatchchi.app",
       "versionCode": 1,
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "CAMERA", "READ_EXTERNAL_STORAGE"]
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,7 +43,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow NammaKatchchi to use your location."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
@@ -46,9 +54,9 @@
         "clientId": "1000.4WQZDKTLHYLVLBOTRFI3HOY439FHFJ",
         "redirectUri": "https://annaapp.vercel.app",
         "scope": "AaaServer.profile.READ",
-        "authEndpoint": "https://accounts.zoho.com/oauth/v2/auth",
-        "tokenEndpoint": "https://accounts.zoho.com/oauth/v2/token",
-        "userInfoEndpoint": "https://accounts.zoho.com/oauth/v2/userinfo"
+        "authEndpoint": "https://accounts.zoho.in/oauth/v2/auth",
+        "tokenEndpoint": "https://accounts.zoho.in/oauth/v2/token",
+        "userInfoEndpoint": "https://accounts.zoho.in/oauth/v2/userinfo"
       }
     }
   }

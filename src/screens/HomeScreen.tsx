@@ -11,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "@/contexts/LocationContext";
 import { useScroll } from "@/contexts/ScrollContext";
 import StoryBar from "@/components/StoryBar";
@@ -27,6 +28,7 @@ type FeedItem =
 
 export default function HomeScreen() {
   const { theme, isDark } = useTheme();
+  const { crmUser } = useAuth();
   const { location } = useLocation();
   const { setScrolledDown } = useScroll();
   const insets = useSafeAreaInsets();
@@ -125,7 +127,14 @@ export default function HomeScreen() {
           <Ionicons name="add-circle-outline" size={26} color={theme.primary} />
         </TouchableOpacity>
 
-        <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>Anna</Text>
+        <View style={styles.headerCenter}>
+          <Text style={[styles.headerTitle, { color: theme.textPrimary }]}>Anna</Text>
+          {!!crmUser?.full_name && (
+            <Text style={[styles.headerUser, { color: theme.textSecondary }]}>
+              {crmUser.full_name}
+            </Text>
+          )}
+        </View>
 
         <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
           <Ionicons name="menu-outline" size={26} color={theme.textPrimary} />
@@ -198,10 +207,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  headerCenter: {
+    alignItems: "center",
+  },
   headerTitle: {
     fontSize: 22,
     fontWeight: "800",
     letterSpacing: -0.5,
+  },
+  headerUser: {
+    fontSize: 11,
+    fontWeight: "500",
+    marginTop: 1,
   },
 
   /* Feed sections */

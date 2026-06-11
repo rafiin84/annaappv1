@@ -3,8 +3,7 @@ import { View, Text, Image, StyleSheet, Animated, Dimensions } from "react-nativ
 
 const { width: W, height: H } = Dimensions.get("window");
 
-const ANNAMALAI_PHOTO =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/K._Annamalai_at_padayatra.jpg/250px-K._Annamalai_at_padayatra.jpg";
+const ANNAMALAI_PHOTO = require("../../assets/leader.jpeg");
 
 interface Props {
   onDone: () => void;
@@ -36,7 +35,7 @@ export default function AppSplash({ onDone }: Props) {
     <Animated.View style={[styles.root, { opacity: fadeAnim }]}>
       {/* Full-bleed photo */}
       <Image
-        source={{ uri: ANNAMALAI_PHOTO }}
+        source={ANNAMALAI_PHOTO}
         style={styles.photo}
         resizeMode="cover"
       />

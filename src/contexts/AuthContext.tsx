@@ -1,21 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {
-  generatePKCE,
-  buildAuthUrl,
-  exchangeCode,
-  fetchProfile,
-  saveVerifier,
-  loadVerifier,
   redirectToZoho,
-  parseCallbackParams,
-  ZohoProfile,
+  consumePendingToken,
+  saveToken,
+  loadToken,
+  clearToken,
 } from "@/utils/zohoAuth";
+import { Users, CRMUser } from "@/utils/zohoCRM";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: ZohoProfile | null;
-  loginWithZoho: () => Promise<void>;
+  crmUser: CRMUser | null;
+  accessToken: string | null;
+  loginWithZoho: () => void;
   loginDemo: (phone: string, password: string) => Promise<boolean>;
   logout: () => void;
   authError: string;
@@ -24,8 +22,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: false,
-  user: null,
-  loginWithZoho: async () => {},
+  crmUser: null,
+  accessToken: null,
+  loginWithZoho: () => {},
   loginDemo: async () => false,
   logout: () => {},
   authError: "",
@@ -33,80 +32,75 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<ZohoProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [crmUser, setCrmUser] = useState<CRMUser | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [authError, setAuthError] = useState("");
 
-  // On mount: check if this is an OAuth callback redirect
   useEffect(() => {
-    async function handleCallback() {
-      const callback = parseCallbackParams();
-      if (!callback) return;
-
-      const stored = loadVerifier();
-      if (!stored) return;
-
-      // Validate state to prevent CSRF
-      if (stored.state !== callback.state) {
-        setAuthError("Authentication failed: state mismatch. Please try again.");
+    async function init() {
+      // 1. Fresh login — token just arrived in URL hash
+      const hashToken = consumePendingToken();
+      if (hashToken) {
+        await saveToken(hashToken);
+        setAccessToken(hashToken);
+        await fetchCurrentUser();
+        setIsAuthenticated(true);
+        setIsLoading(false);
         return;
       }
 
-      setIsLoading(true);
-      setAuthError("");
-      try {
-        const token = await exchangeCode(callback.code, stored.verifier);
-        const profile = await fetchProfile(token);
-        setUser(profile);
+      // 2. Existing session — token in secure storage
+      const stored = await loadToken();
+      if (stored) {
+        setAccessToken(stored);
+        await fetchCurrentUser();
         setIsAuthenticated(true);
-      } catch (e: any) {
-        setAuthError(e.message ?? "Authentication failed. Please try again.");
-      } finally {
-        setIsLoading(false);
       }
-    }
 
-    handleCallback();
-  }, []);
-
-  const loginWithZoho = async () => {
-    setAuthError("");
-    setIsLoading(true);
-    try {
-      const { verifier, challenge } = await generatePKCE();
-      const state = Math.random().toString(36).slice(2);
-      saveVerifier(verifier, state);
-      const url = buildAuthUrl(challenge, state);
-      redirectToZoho(url);
-    } catch (e: any) {
-      setAuthError(e.message ?? "Failed to start login. Please try again.");
       setIsLoading(false);
     }
+
+    init();
+  }, []);
+
+  async function fetchCurrentUser() {
+    try {
+      const res = await Users.me();
+      if (res?.users?.[0]) {
+        setCrmUser(res.users[0]);
+      }
+    } catch (e) {
+      // Non-fatal — app still works without user details
+      console.warn("Could not fetch CRM user:", e);
+    }
+  }
+
+  const loginWithZoho = () => {
+    setAuthError("");
+    redirectToZoho();
   };
 
-  // Demo login (phone + password, no real auth)
   const loginDemo = async (phone: string, password: string): Promise<boolean> => {
     if (phone.trim().length >= 10 && password.trim().length >= 4) {
-      setUser({
-        ZUID: "demo",
-        First_Name: "Demo",
-        Last_Name: "User",
-        Display_Name: "Demo User",
-        Email: phone + "@demo.com",
-      });
+      setCrmUser({ id: "demo", full_name: "Demo User", email: phone + "@demo.com" });
       setIsAuthenticated(true);
       return true;
     }
     return false;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await clearToken();
     setIsAuthenticated(false);
-    setUser(null);
+    setCrmUser(null);
+    setAccessToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, loginWithZoho, loginDemo, logout, authError }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, isLoading, crmUser, accessToken, loginWithZoho, loginDemo, logout, authError }}
+    >
       {children}
     </AuthContext.Provider>
   );

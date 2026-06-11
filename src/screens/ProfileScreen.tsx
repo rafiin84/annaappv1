@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  Modal,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { CURRENT_USER, MOCK_POSTS, MOCK_VOLUNTEER_TASKS, formatCount } from "@/data/mockData";
 import { palette } from "@/theme/colors";
 
@@ -31,8 +34,10 @@ type ProfileTab = (typeof PROFILE_TABS)[number];
 
 export default function ProfileScreen() {
   const { theme, toggleTheme, isDark } = useTheme();
+  const { crmUser, logout } = useAuth();
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<ProfileTab>("Posts");
+  const [showLogout, setShowLogout] = useState(false);
   const user = CURRENT_USER;
   const levelInfo = VOLUNTEER_LEVELS[user.volunteerLevel - 1];
   const nextLevel = VOLUNTEER_LEVELS[user.volunteerLevel] ?? null;
@@ -40,6 +45,7 @@ export default function ProfileScreen() {
   const progressToNext = nextLevel ? (currentXP - levelInfo.xp) / (nextLevel.xp - levelInfo.xp) : 1;
 
   return (
+    <>
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
       showsVerticalScrollIndicator={false}
@@ -54,7 +60,10 @@ export default function ProfileScreen() {
           pointerEvents="none"
         />
         <View style={[styles.coverActions, { paddingTop: insets.top + 8 }]}>
-          <TouchableOpacity style={[styles.coverBtn, { backgroundColor: "rgba(0,0,0,0.4)" }]}>
+          <TouchableOpacity
+            style={[styles.coverBtn, { backgroundColor: "rgba(0,0,0,0.4)" }]}
+            onPress={() => setShowLogout(true)}
+          >
             <Ionicons name="settings-outline" size={20} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity
@@ -85,8 +94,12 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <Text style={[styles.name, { color: theme.textPrimary }]}>{user.name}</Text>
-        <Text style={[styles.handle, { color: theme.textSecondary }]}>@{user.handle}</Text>
+        <Text style={[styles.name, { color: theme.textPrimary }]}>
+          {crmUser?.full_name ?? user.name}
+        </Text>
+        <Text style={[styles.handle, { color: theme.textSecondary }]}>
+          {crmUser?.email ? crmUser.email : `@${user.handle}`}
+        </Text>
 
         {/* Level bar */}
         <View style={[styles.levelRow, { backgroundColor: levelInfo.color + "15", borderColor: levelInfo.color + "30" }]}>
@@ -318,7 +331,51 @@ export default function ProfileScreen() {
           ))}
         </View>
       )}
+      {/* Sign Out button */}
+      <TouchableOpacity
+        style={[styles.signOutRow, { borderColor: theme.border }]}
+        onPress={() => setShowLogout(true)}
+        activeOpacity={0.7}
+      >
+        <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+        <Text style={styles.signOutText}>Sign Out</Text>
+      </TouchableOpacity>
+
     </ScrollView>
+
+    {/* Logout confirmation modal */}
+    <Modal visible={showLogout} transparent animationType="fade" onRequestClose={() => setShowLogout(false)}>
+      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowLogout(false)}>
+        <View style={[styles.modalCard, { backgroundColor: theme.surface }]}>
+          <View style={styles.modalIconWrap}>
+            <Ionicons name="log-out-outline" size={32} color="#EF4444" />
+          </View>
+          <Text style={[styles.modalTitle, { color: theme.textPrimary }]}>Sign Out</Text>
+          <Text style={[styles.modalSub, { color: theme.textSecondary }]}>
+            {crmUser?.full_name
+              ? `Signing out of ${crmUser.full_name}`
+              : "Are you sure you want to sign out?"}
+          </Text>
+
+          <TouchableOpacity
+            style={styles.logoutBtn}
+            onPress={async () => { setShowLogout(false); await logout(); }}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.logoutBtnText}>Yes, Sign Out</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.cancelBtn, { borderColor: theme.border }]}
+            onPress={() => setShowLogout(false)}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.cancelBtnText, { color: theme.textPrimary }]}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+    </>
   );
 }
 
@@ -430,4 +487,68 @@ const styles = StyleSheet.create({
   taskHours: { fontSize: 11 },
   difficultyBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   difficultyText: { fontSize: 10, fontWeight: "600", textTransform: "capitalize" },
+
+  // Sign out row
+  signOutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 24,
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  signOutText: { fontSize: 15, fontWeight: "600", color: "#EF4444" },
+
+  // Logout modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 32,
+  },
+  modalCard: {
+    width: "100%",
+    borderRadius: 24,
+    padding: 28,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 16,
+  },
+  modalIconWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "#FEF2F2",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  modalTitle: { fontSize: 20, fontWeight: "800", marginBottom: 6 },
+  modalSub: { fontSize: 14, textAlign: "center", lineHeight: 20, marginBottom: 24 },
+  logoutBtn: {
+    width: "100%",
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: "#EF4444",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  logoutBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  cancelBtn: {
+    width: "100%",
+    height: 52,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelBtnText: { fontSize: 15, fontWeight: "600" },
 });

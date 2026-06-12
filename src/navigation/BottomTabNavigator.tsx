@@ -307,20 +307,21 @@ export default function BottomTabNavigator() {
 
   return (
     <>
-      <Tab.Navigator
-        screenOptions={{ headerShown: false }}
-        tabBar={(props) => <ResponsiveTabBar {...props} />}
-        sceneContainerStyle={isDesktop ? { marginLeft: contentMarginH, marginRight: contentMarginH } : undefined}
-      >
-        {TABS.map((tab) => (
-          <Tab.Screen
-            key={tab.name}
-            name={tab.name}
-            component={CENTERED_SCREENS[tab.name]}
-            options={{ title: tab.label }}
-          />
-        ))}
-      </Tab.Navigator>
+      <View style={{ flex: 1, marginLeft: contentMarginH, marginRight: contentMarginH }}>
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          tabBar={(props) => <ResponsiveTabBar {...props} />}
+        >
+          {TABS.map((tab) => (
+            <Tab.Screen
+              key={tab.name}
+              name={tab.name}
+              component={RAW_SCREENS[tab.name]}
+              options={{ title: tab.label }}
+            />
+          ))}
+        </Tab.Navigator>
+      </View>
 
       {showRightPanel && (
         <DesktopRightPanel leftPos={rightPanelLeft} isDark={isDark} theme={theme} />

@@ -303,11 +303,10 @@ export default function BottomTabNavigator() {
   const { width } = useWindowDimensions();
   const { theme, isDark } = useTheme();
   const { isDesktop, showRightPanel, rightPanelLeft } = useDesktopPositions(width);
-  const contentMarginH = isDesktop ? Math.max(0, (width - CONTENT_MAX_W) / 2) : 0;
 
   return (
-    <>
-      <View style={{ flex: 1, marginLeft: contentMarginH, marginRight: contentMarginH }}>
+    <View style={{ flex: 1, alignItems: isDesktop ? "center" : "stretch" }}>
+      <View style={{ flex: 1, width: isDesktop ? CONTENT_MAX_W : ("100%" as any) }}>
         <Tab.Navigator
           screenOptions={{ headerShown: false }}
           tabBar={(props) => <ResponsiveTabBar {...props} />}
@@ -326,7 +325,7 @@ export default function BottomTabNavigator() {
       {showRightPanel && (
         <DesktopRightPanel leftPos={rightPanelLeft} isDark={isDark} theme={theme} />
       )}
-    </>
+    </View>
   );
 }
 
